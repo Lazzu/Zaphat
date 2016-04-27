@@ -1,0 +1,62 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zaphat", "Zaphat\Zaphat.csproj", "{77411612-8D5E-4A07-9208-0916F08D905A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zaphat Tests", "Zaphat Tests\Zaphat Tests.csproj", "{096FECB9-1D6E-4009-9683-9BD1B200B3F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTK", "opentk\Source\OpenTK\OpenTK.csproj", "{A37A7E14-0000-0000-0000-000000000000}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		DebugMinimal|Any CPU = DebugMinimal|Any CPU
+		Documentation|Any CPU = Documentation|Any CPU
+		Nsis|Any CPU = Nsis|Any CPU
+		Release|Any CPU = Release|Any CPU
+		ReleaseMinimal|Any CPU = ReleaseMinimal|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{77411612-8D5E-4A07-9208-0916F08D905A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77411612-8D5E-4A07-9208-0916F08D905A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77411612-8D5E-4A07-9208-0916F08D905A}.DebugMinimal|Any CPU.ActiveCfg = Debug|Any CPU
+		{77411612-8D5E-4A07-9208-0916F08D905A}.DebugMinimal|Any CPU.Build.0 = Debug|Any CPU
+		{77411612-8D5E-4A07-9208-0916F08D905A}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{77411612-8D5E-4A07-9208-0916F08D905A}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{77411612-8D5E-4A07-9208-0916F08D905A}.Nsis|Any CPU.ActiveCfg = Release|Any CPU
+		{77411612-8D5E-4A07-9208-0916F08D905A}.Nsis|Any CPU.Build.0 = Release|Any CPU
+		{77411612-8D5E-4A07-9208-0916F08D905A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77411612-8D5E-4A07-9208-0916F08D905A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77411612-8D5E-4A07-9208-0916F08D905A}.ReleaseMinimal|Any CPU.ActiveCfg = Release|Any CPU
+		{77411612-8D5E-4A07-9208-0916F08D905A}.ReleaseMinimal|Any CPU.Build.0 = Release|Any CPU
+		{096FECB9-1D6E-4009-9683-9BD1B200B3F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{096FECB9-1D6E-4009-9683-9BD1B200B3F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{096FECB9-1D6E-4009-9683-9BD1B200B3F3}.DebugMinimal|Any CPU.ActiveCfg = Debug|Any CPU
+		{096FECB9-1D6E-4009-9683-9BD1B200B3F3}.DebugMinimal|Any CPU.Build.0 = Debug|Any CPU
+		{096FECB9-1D6E-4009-9683-9BD1B200B3F3}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{096FECB9-1D6E-4009-9683-9BD1B200B3F3}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{096FECB9-1D6E-4009-9683-9BD1B200B3F3}.Nsis|Any CPU.ActiveCfg = Release|Any CPU
+		{096FECB9-1D6E-4009-9683-9BD1B200B3F3}.Nsis|Any CPU.Build.0 = Release|Any CPU
+		{096FECB9-1D6E-4009-9683-9BD1B200B3F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{096FECB9-1D6E-4009-9683-9BD1B200B3F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{096FECB9-1D6E-4009-9683-9BD1B200B3F3}.ReleaseMinimal|Any CPU.ActiveCfg = Release|Any CPU
+		{096FECB9-1D6E-4009-9683-9BD1B200B3F3}.ReleaseMinimal|Any CPU.Build.0 = Release|Any CPU
+		{A37A7E14-0000-0000-0000-000000000000}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A37A7E14-0000-0000-0000-000000000000}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A37A7E14-0000-0000-0000-000000000000}.DebugMinimal|Any CPU.ActiveCfg = DebugMinimal|Any CPU
+		{A37A7E14-0000-0000-0000-000000000000}.DebugMinimal|Any CPU.Build.0 = DebugMinimal|Any CPU
+		{A37A7E14-0000-0000-0000-000000000000}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{A37A7E14-0000-0000-0000-000000000000}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{A37A7E14-0000-0000-0000-000000000000}.Nsis|Any CPU.ActiveCfg = Nsis|Any CPU
+		{A37A7E14-0000-0000-0000-000000000000}.Nsis|Any CPU.Build.0 = Nsis|Any CPU
+		{A37A7E14-0000-0000-0000-000000000000}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A37A7E14-0000-0000-0000-000000000000}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A37A7E14-0000-0000-0000-000000000000}.ReleaseMinimal|Any CPU.ActiveCfg = ReleaseMinimal|Any CPU
+		{A37A7E14-0000-0000-0000-000000000000}.ReleaseMinimal|Any CPU.Build.0 = ReleaseMinimal|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
