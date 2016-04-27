@@ -24,12 +24,7 @@ namespace Zaphat.Rendering
         /// The GLName of the buffer object.
         /// </summary>
         public uint Name { get; protected set; }
-
-        /// <summary>
-        /// Determines if the data should be uploaded automatically straight away when it has been overwritten.
-        /// </summary>
-        public bool AutoUpload { get; set; }
-
+        
         /// <summary>
         /// The backing field for Data property.
         /// </summary>
@@ -46,9 +41,6 @@ namespace Zaphat.Rendering
                 _Reserved = _Reserved && _data.Length == value.Length;
                 _data = value;
                 Dirty = true;
-
-                if (AutoUpload)
-                    Upload();
             }
         }
 
