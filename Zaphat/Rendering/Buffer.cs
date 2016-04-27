@@ -117,6 +117,7 @@ namespace Zaphat.Rendering
             if (!_Reserved)
             {
                 GL.BufferData(Target, _data.Length * ElementSizeInBytes, _data, BufferUsageHint);
+                _Reserved = true;
             }
             else
             {
