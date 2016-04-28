@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application\ZapApp.cs" />
+    <Compile Include="Assets\Asset.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\ArrayBufferVector3.cs" />
     <Compile Include="Rendering\Buffer.cs" />
@@ -47,9 +48,8 @@
     <Compile Include="Rendering\VertexArrayObject.cs" />
     <Compile Include="Rendering\VertexBatch.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\opentk\Source\OpenTK\OpenTK.csproj">
+    <ProjectReference Include="..\Lib\opentk\Source\OpenTK\OpenTK.csproj">
       <Project>{a37a7e14-0000-0000-0000-000000000000}</Project>
       <Name>OpenTK</Name>
     </ProjectReference>

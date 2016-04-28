@@ -7,9 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zaphat", "Zaphat\Zaphat.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zaphat Tests", "Zaphat Tests\Zaphat Tests.csproj", "{096FECB9-1D6E-4009-9683-9BD1B200B3F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTK", "opentk\Source\OpenTK\OpenTK.csproj", "{A37A7E14-0000-0000-0000-000000000000}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZaphatDevProgram", "ZaphatDevProgram\ZaphatDevProgram.csproj", "{92B603F9-025F-4627-82AE-BF8AD52FDFD3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTK", "Lib\opentk\Source\OpenTK\OpenTK.csproj", "{A37A7E14-0000-0000-0000-000000000000}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,18 +45,6 @@ Global
 		{096FECB9-1D6E-4009-9683-9BD1B200B3F3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{096FECB9-1D6E-4009-9683-9BD1B200B3F3}.ReleaseMinimal|Any CPU.ActiveCfg = Release|Any CPU
 		{096FECB9-1D6E-4009-9683-9BD1B200B3F3}.ReleaseMinimal|Any CPU.Build.0 = Release|Any CPU
-		{A37A7E14-0000-0000-0000-000000000000}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A37A7E14-0000-0000-0000-000000000000}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A37A7E14-0000-0000-0000-000000000000}.DebugMinimal|Any CPU.ActiveCfg = DebugMinimal|Any CPU
-		{A37A7E14-0000-0000-0000-000000000000}.DebugMinimal|Any CPU.Build.0 = DebugMinimal|Any CPU
-		{A37A7E14-0000-0000-0000-000000000000}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
-		{A37A7E14-0000-0000-0000-000000000000}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
-		{A37A7E14-0000-0000-0000-000000000000}.Nsis|Any CPU.ActiveCfg = Nsis|Any CPU
-		{A37A7E14-0000-0000-0000-000000000000}.Nsis|Any CPU.Build.0 = Nsis|Any CPU
-		{A37A7E14-0000-0000-0000-000000000000}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A37A7E14-0000-0000-0000-000000000000}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A37A7E14-0000-0000-0000-000000000000}.ReleaseMinimal|Any CPU.ActiveCfg = ReleaseMinimal|Any CPU
-		{A37A7E14-0000-0000-0000-000000000000}.ReleaseMinimal|Any CPU.Build.0 = ReleaseMinimal|Any CPU
 		{92B603F9-025F-4627-82AE-BF8AD52FDFD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{92B603F9-025F-4627-82AE-BF8AD52FDFD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92B603F9-025F-4627-82AE-BF8AD52FDFD3}.DebugMinimal|Any CPU.ActiveCfg = Debug|Any CPU
@@ -69,6 +57,18 @@ Global
 		{92B603F9-025F-4627-82AE-BF8AD52FDFD3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{92B603F9-025F-4627-82AE-BF8AD52FDFD3}.ReleaseMinimal|Any CPU.ActiveCfg = Release|Any CPU
 		{92B603F9-025F-4627-82AE-BF8AD52FDFD3}.ReleaseMinimal|Any CPU.Build.0 = Release|Any CPU
+		{A37A7E14-0000-0000-0000-000000000000}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A37A7E14-0000-0000-0000-000000000000}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A37A7E14-0000-0000-0000-000000000000}.DebugMinimal|Any CPU.ActiveCfg = DebugMinimal|Any CPU
+		{A37A7E14-0000-0000-0000-000000000000}.DebugMinimal|Any CPU.Build.0 = DebugMinimal|Any CPU
+		{A37A7E14-0000-0000-0000-000000000000}.Documentation|Any CPU.ActiveCfg = Documentation|Any CPU
+		{A37A7E14-0000-0000-0000-000000000000}.Documentation|Any CPU.Build.0 = Documentation|Any CPU
+		{A37A7E14-0000-0000-0000-000000000000}.Nsis|Any CPU.ActiveCfg = Nsis|Any CPU
+		{A37A7E14-0000-0000-0000-000000000000}.Nsis|Any CPU.Build.0 = Nsis|Any CPU
+		{A37A7E14-0000-0000-0000-000000000000}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A37A7E14-0000-0000-0000-000000000000}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A37A7E14-0000-0000-0000-000000000000}.ReleaseMinimal|Any CPU.ActiveCfg = ReleaseMinimal|Any CPU
+		{A37A7E14-0000-0000-0000-000000000000}.ReleaseMinimal|Any CPU.Build.0 = ReleaseMinimal|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

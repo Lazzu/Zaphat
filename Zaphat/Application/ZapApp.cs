@@ -10,7 +10,7 @@ namespace Zaphat.Application
     /// </summary>
     public class ZapApp : GameWindow
     {
-        public ZapApp() : base(1280, 720, new GraphicsMode(new ColorFormat(32), 32, 0, 0, 0, 2, false))
+        public ZapApp(int width, int height, GraphicsMode mode) : base(width, height, mode)
         {
 
         }
