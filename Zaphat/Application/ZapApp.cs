@@ -12,7 +12,7 @@ namespace Zaphat.Application
     {
         public ZapApp(int width, int height, GraphicsMode mode) : base(width, height, mode)
         {
-
+			
         }
 
         protected override void OnLoad(EventArgs e)
