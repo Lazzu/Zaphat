@@ -1,10 +1,7 @@
 ﻿using OpenTK;
-using OpenTK.Graphics.OpenGL;
-using System;
-using System.Collections.Generic;
+using OpenTK.Graphics.OpenGL4;
 
-
-namespace Zaphat.Rendering
+namespace Zaphat.Core
 {
 	public class ArrayBufferVector2 : Buffer<Vector2>
 	{

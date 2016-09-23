@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using OpenTK;
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL4;
 
 namespace Zaphat.Rendering
 {
@@ -54,6 +54,7 @@ namespace Zaphat.Rendering
 		#region Uniforms
 
 		Dictionary<string, int> uniforms = new Dictionary<string, int>();
+		Dictionary<string, int> blocks = new Dictionary<string, int>();
 
 		/// <summary>
 		/// Tries to find the location of an uniform from this ShaderProgram object.
@@ -65,10 +66,25 @@ namespace Zaphat.Rendering
 			int location = GetUniformLocation(name);
 
 			// Check for valid response
-			if (location == -1)
-				return false;
+			return location != -1;
+		}
 
-			return true;
+		public bool FindUniformBlockIndex(string name)
+		{
+			int index = GetUniformBlockIndex(name);
+
+			return index != -1;
+		}
+
+		int GetUniformBlockIndex(string name)
+		{
+			int index;
+			if (!blocks.TryGetValue(name, out index))
+			{
+				index = GL.GetUniformBlockIndex(Name, name);
+				blocks.Add(name, index);
+			}
+			return index;
 		}
 
 		int GetUniformLocation(string name)
@@ -81,6 +97,14 @@ namespace Zaphat.Rendering
 				uniforms.Add(name, location);
 			}
 			return location;
+		}
+
+		public void BindUniformBlock(string name, Zaphat.Core.Buffer buffer)
+		{
+			var index = GetUniformBlockIndex(name);
+			if (index < 0)
+				return;
+			GL.BindBufferBase(BufferRangeTarget.UniformBuffer, index, buffer.Name);
 		}
 
 		public void SendUniform(string name, float value)
