@@ -4,7 +4,7 @@ using Zaphat.Core;
 
 namespace Zaphat.Assets.Textures
 {
-	public class Texture : GPUResource/*, IDisposable*/
+	public class Texture : GPUResource
 	{
 		TextureSettings settings;
 		bool dirtySettings;
@@ -68,36 +68,5 @@ namespace Zaphat.Assets.Textures
 		{
 			GL.DeleteTexture(GLName);
 		}
-
-		/*
-		#region IDisposable
-		public void Dispose()
-		{
-			Dispose(true);
-		}
-
-		void Dispose(bool manual)
-		{
-			GC.SuppressFinalize(this);
-
-			if (GLName != -1)
-			{
-				GPUResourceManagers.TextureNameManager.Release(GLName);
-			}
-
-			GLName = -1;
-
-			if (!manual)
-			{
-				Utilities.Logger.Debug(string.Format("A texture was not manually disposed! Path: {0}", Path));
-			}
-		}
-
-		~Texture()
-		{
-			Dispose(false);
-		}
-		#endregion
-		*/
 	}
 }
