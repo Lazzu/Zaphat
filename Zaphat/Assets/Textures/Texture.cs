@@ -58,6 +58,11 @@ namespace Zaphat.Assets.Textures
 			}
 		}
 
+		public void UnBind()
+		{
+			GL.BindTexture(Target, 0);
+		}
+
 		public void ApplySettings()
 		{
 			settings.Apply(Target);

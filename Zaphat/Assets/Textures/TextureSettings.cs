@@ -30,6 +30,8 @@ namespace Zaphat.Assets.Textures
 			set;
 		}
 
+		public PixelInternalFormat Format { get; set; }
+
 		public void Apply(TextureTarget target)
 		{
 			AnisotrophyLevel = Math.Min(AnisotrophyLevel, GPUCapabilities.MaxAnisotrophy);

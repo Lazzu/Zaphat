@@ -85,6 +85,7 @@
     <Compile Include="Core\DefaultCameraData.cs" />
     <Compile Include="Core\DefaultTransformBuffer.cs" />
     <Compile Include="Assets\IAssetManager.cs" />
+    <Compile Include="Assets\Meshes\DefaultMeshData.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Sprites\" />
