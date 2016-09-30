@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>OpenTK.GLWidget</name>
+    </assembly>
+    <members>
+        <member name="P:OpenTK.GLWidget.SingleBuffer">
+             <summary>Use a single buffer versus a double buffer.</summary>
+            </member>
+        <member name="P:OpenTK.GLWidget.ColorBPP">
+             <summary>Color Buffer Bits-Per-Pixel</summary>
+            </member>
+        <member name="P:OpenTK.GLWidget.AccumulatorBPP">
+             <summary>Accumulation Buffer Bits-Per-Pixel</summary>
+            </member>
+        <member name="P:OpenTK.GLWidget.DepthBPP">
+             <summary>Depth Buffer Bits-Per-Pixel</summary>
+            </member>
+        <member name="P:OpenTK.GLWidget.StencilBPP">
+             <summary>Stencil Buffer Bits-Per-Pixel</summary>
+            </member>
+        <member name="P:OpenTK.GLWidget.Samples">
+             <summary>Number of samples</summary>
+            </member>
+        <member name="P:OpenTK.GLWidget.Stereo">
+             <summary>Indicates if steropic renderering is enabled</summary>
+            </member>
+        <member name="P:OpenTK.GLWidget.GlVersionMajor">
+             <summary>The major version of OpenGL to use.</summary>
+            </member>
+        <member name="P:OpenTK.GLWidget.GlVersionMinor">
+             <summary>The minor version of OpenGL to use.</summary>
+            </member>
+        <member name="M:OpenTK.GLWidget.#ctor">
+             <summary>Constructs a new GLWidget.</summary>
+            </member>
+        <member name="M:OpenTK.GLWidget.#ctor(OpenTK.Graphics.GraphicsMode)">
+             <summary>Constructs a new GLWidget using a given GraphicsMode</summary>
+            </member>
+        <member name="M:OpenTK.GLWidget.#ctor(OpenTK.Graphics.GraphicsMode,System.Int32,System.Int32,OpenTK.Graphics.GraphicsContextFlags)">
+             <summary>Constructs a new GLWidget</summary>
+            </member>
+        <member name="M:OpenTK.GLWidget.gdk_x11_drawable_get_xid(System.IntPtr)">
+             <summary> Returns the X resource (window or pixmap) belonging to a GdkDrawable. </summary>
+             <remarks> XID gdk_x11_drawable_get_xid(GdkDrawable *drawable); </remarks>
+             <param name="gdkDisplay"> The GdkDrawable. </param>
+             <returns> The ID of drawable's X resource. </returns>
+            </member>
+        <member name="M:OpenTK.GLWidget.gdk_x11_window_get_xid(System.IntPtr)">
+             <summary> Returns the X resource (window or pixmap) belonging to a GdkDrawable. </summary>
+             <remarks> XID gdk_x11_drawable_get_xid(GdkDrawable *drawable); </remarks>
+             <param name="gdkDisplay"> The GdkDrawable. </param>
+             <returns> The ID of drawable's X resource. </returns>
+            </member>
+        <member name="M:OpenTK.GLWidget.gdk_x11_display_get_xdisplay(System.IntPtr)">
+             <summary> Returns the X display of a GdkDisplay. </summary>
+             <remarks> Display* gdk_x11_display_get_xdisplay(GdkDisplay *display); </remarks>
+             <param name="gdkDisplay"> The GdkDrawable. </param>
+             <returns> The X Display of the GdkDisplay. </returns>
+            </member>
+    </members>
+</doc>
