@@ -27,8 +27,6 @@ namespace ZaphatDevProgram
 
 		DefaultTransformBuffer Transform;
 
-		MeshManager meshes = new MeshManager();
-
 		public DevApp(int width, int height, GraphicsMode mode) : base(width, height, mode)
 		{
 			VSync = VSyncMode.Adaptive;
@@ -128,9 +126,6 @@ namespace ZaphatDevProgram
 
 			Transform.UpdateData();
 
-			var meshlist = new List<Mesh>();
-
-			meshes.ImportAssimp("Assets/Models/suzanne.fbx", meshlist, null);
 		}
 
 		double totalTime = 0.0;

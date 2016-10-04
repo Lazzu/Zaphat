@@ -37,9 +37,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="AssimpNet">
-      <HintPath>..\Lib\assimp-net\AssimpNet.dll</HintPath>
-    </Reference>
     <Reference Include="OpenTK">
       <HintPath>..\Lib\opentk\OpenTK.dll</HintPath>
     </Reference>
