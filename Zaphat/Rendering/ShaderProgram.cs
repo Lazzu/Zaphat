@@ -7,25 +7,34 @@ namespace Zaphat.Rendering
 {
 	public class ShaderProgram
 	{
-		public int Name
+        public Guid ID { get; protected set; }
+        public string Name { get; protected set; }
+
+        public int GLName
 		{
 			get;
 			protected set;
 		}
 
-		public ShaderProgram()
-		{
-			Name = GL.CreateProgram();
-		}
+        public ShaderProgram() : this(Guid.NewGuid(), "Unnamed") {}
 
-		public void Release()
+		public ShaderProgram(string name) : this(Guid.NewGuid(), name) {}
+
+        public ShaderProgram(Guid id, string name)
+        {
+            ID = id;
+            Name = name;
+            GLName = GL.CreateProgram();
+        }
+
+        public void Release()
 		{
-			GL.DeleteProgram(Name);
+			GL.DeleteProgram(GLName);
 		}
 
 		public void AttachShader(Shader shader)
 		{
-			GL.AttachShader(Name, shader.Name);
+			GL.AttachShader(GLName, shader.Name);
 		}
 
 		public void AttachShaders(params Shader[] shaders)
@@ -38,12 +47,12 @@ namespace Zaphat.Rendering
 
 		public void Link()
 		{
-			GL.LinkProgram(Name);
+			GL.LinkProgram(GLName);
 		}
 
 		public void Use()
 		{
-			GL.UseProgram(Name);
+			GL.UseProgram(GLName);
 		}
 
 		public void UnUse()
@@ -69,11 +78,23 @@ namespace Zaphat.Rendering
 			return location != -1;
 		}
 
+        /// <summary>
+        /// Find the uniform block index and return if it succeeded or not
+        /// </summary>
+        /// <param name="name">The uniform block name</param>
+        /// <returns>True if uniform block index was found. False otherwise.</returns>
 		public bool FindUniformBlockIndex(string name)
 		{
 			int index = GetUniformBlockIndex(name);
 
-			return index != -1;
+            var found = index != -1;
+
+            if (!found)
+            {
+                Utilities.Logger.Debug("Did not find uniform block \"" + name + "\" from shader \"" + Name + "\"");
+            }
+
+			return found;
 		}
 
 		int GetUniformBlockIndex(string name)
@@ -81,8 +102,14 @@ namespace Zaphat.Rendering
 			int index;
 			if (!blocks.TryGetValue(name, out index))
 			{
-				index = GL.GetUniformBlockIndex(Name, name);
-				blocks.Add(name, index);
+				index = GL.GetUniformBlockIndex(GLName, name);
+
+                if (index == -1)
+                {
+                    Utilities.Logger.Debug("Did not find uniform block \"" + name + "\" from shader \"" + Name + "\"");
+                }
+
+                blocks.Add(name, index);
 			}
 			return index;
 		}
@@ -92,7 +119,7 @@ namespace Zaphat.Rendering
 			int location;
 			if (!uniforms.TryGetValue(name, out location))
 			{
-				location = GL.GetUniformLocation(Name, name);
+				location = GL.GetUniformLocation(GLName, name);
 
 				uniforms.Add(name, location);
 			}
@@ -193,7 +220,7 @@ namespace Zaphat.Rendering
 			int location = -1;
 			if (!attrLocations.TryGetValue(attribName, out location))
 			{
-				location = GL.GetAttribLocation(Name, attribName);
+				location = GL.GetAttribLocation(GLName, attribName);
 				attrLocations.Add(attribName, location);
 			}
 			return location;

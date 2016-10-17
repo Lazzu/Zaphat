@@ -143,33 +143,29 @@ namespace Zaphat.Core
 		/// Upload raw data to the GPU to the beginning of the buffer.
 		/// </summary>
 		/// <param name="data">Data.</param>
+        /// <param name="bytes">Data size in bytes</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public void UploadRaw<T>(T[] data) where T : struct
+		public void UploadRaw<T>(T[] data, int bytes) where T : struct
 		{
-			var size = Marshal.SizeOf<T>();
-
-			var bytes = data.Length * size;
-
 			if (_ReservedBytes < bytes)
 			{
 				GL.BufferData(Target, bytes, IntPtr.Zero, BufferUsageHint);
 				_ReservedBytes = bytes;
 			}
 
-			GL.BufferSubData(Target, (IntPtr)(0), bytes, data);
+            UploadRangeRaw(data, 0, bytes);
 		}
 
 		/// <summary>
 		/// Uploads raw data to the GPU using a range.
 		/// </summary>
 		/// <param name="data">Data.</param>
-		/// <param name="from">From.</param>
-		/// <param name="count">Count.</param>
+		/// <param name="fromBytes">The first byte offset.</param>
+		/// <param name="bytes">How many bytes to upload.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public void UploadRangeRaw<T>(T[] data, int from, int count) where T : struct
+		public void UploadRangeRaw<T>(T[] data, int fromBytes, int bytes) where T : struct
 		{
-			var size = Marshal.SizeOf<T>();
-			GL.BufferSubData(Target, (IntPtr)(from * size), count * size, data);
+			GL.BufferSubData(Target, (IntPtr)(fromBytes), bytes, data);
 		}
 	}
 
@@ -205,7 +201,7 @@ namespace Zaphat.Core
 		public Buffer(BufferTarget target)
 		{
 			var tmpElement = default(T);
-			ElementSizeInBytes = System.Runtime.InteropServices.Marshal.SizeOf(tmpElement);
+			ElementSizeInBytes = Marshal.SizeOf(tmpElement);
 			Stride = BlittableValueType.StrideOf(tmpElement);
 			BufferUsageHint = BufferUsageHint.StaticDraw;
 
@@ -262,11 +258,49 @@ namespace Zaphat.Core
 			}
 		}
 
-		/// <summary>
-		/// Upload an array of data to the GPU.
-		/// </summary>
-		/// <param name="data">The uploaded data.</param>
-		public void Upload(T[] data)
+        public void Upload(T data)
+        {
+            Dirty = false;
+
+            if(ShadowStore)
+            {
+                _data = new[] { data };
+            }
+
+            _Reserved = _Reserved && ElementSizeInBytes == _ReservedBytes;
+
+            if(!_Reserved)
+            {
+                Reserve(1);
+            }
+
+            GL.BufferSubData(Target, IntPtr.Zero, _ReservedBytes, ref data);
+        }
+
+        public void Upload(ref T data)
+        {
+            Dirty = false;
+
+            if (ShadowStore)
+            {
+                _data = new[] { data };
+            }
+
+            _Reserved = _Reserved && ElementSizeInBytes == _ReservedBytes;
+
+            if (!_Reserved)
+            {
+                Reserve(1);
+            }
+
+            GL.BufferSubData(Target, IntPtr.Zero, _ReservedBytes, ref data);
+        }
+
+        /// <summary>
+        /// Upload an array of data to the GPU.
+        /// </summary>
+        /// <param name="data">The uploaded data.</param>
+        public void Upload(T[] data)
 		{
 			Dirty = false;
 
@@ -281,7 +315,7 @@ namespace Zaphat.Core
 
 			if (!_Reserved)
 			{
-				Reserve(bytes);
+				Reserve(data.Length);
 			}
 
 			GL.BufferSubData(Target, IntPtr.Zero, _ReservedBytes, data);

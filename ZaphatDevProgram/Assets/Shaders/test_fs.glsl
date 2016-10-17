@@ -39,7 +39,7 @@ void main( void )
 
 
 
-
+	RGBA = vec4(abs(fPosition.xyz), 1.0);
 
 
 
@@ -48,5 +48,5 @@ void main( void )
 	//RGBA = fColor;
 	//RGBA = vec4(fPosition, 1.0);
 	//RGBA = vec4(fNormal, 1.0);
-	//RGBA = vec4(lightPosition, 1.0);
+	//RGBA = vec4(fPosition - lightPosition, 1.0);
 }

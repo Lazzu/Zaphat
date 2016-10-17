@@ -12,11 +12,20 @@ out vec3 fNormal;
 
 layout(std140) uniform TransformBlock
 {
-	vec4 Position;
-	vec4 Rotation;
-	vec3 Scale;
-	mat4 mViewProjection;
-} transform;
+	vec4 objPosition;
+	vec4 objRotation;
+	vec4 objScale;
+};
+
+layout(std140) uniform ViewProjectionBlock
+{
+    mat4 ViewProjection;
+	mat4 View;
+	mat4 Projection;
+	mat4 InvView;
+	vec4 CameraWorldPosition;
+	vec4 CameraWorldDirection;
+};
 
 uniform float time;
 
@@ -27,14 +36,14 @@ vec3 Rotate( vec4 q, vec3 v )
 
 vec4 Transform(vec3 v)
 {
-	v = Rotate(transform.Rotation, v);
-	v *= transform.Scale;
-	return vec4(v + transform.Position.xyz, 1.0);
+	v = Rotate(objRotation, v);
+	v *= objScale.xyz;
+	return vec4(v + objPosition.xyz, 1.0);
 }
 
 vec3 RotateNormal(vec3 n)
 {
-	return Rotate(transform.Rotation, n);
+	return Rotate(objRotation, n);
 }
 
 void main()
@@ -42,8 +51,11 @@ void main()
 	tcoord = uv.xy;
 	fColor = color;
 	fNormal = RotateNormal(normal);
-	vec4 pos = transform.mViewProjection * Transform(vertex);
-	fPosition = pos.xyz / pos.w;
+	//vec4 pos = Transform(vertex);
+	vec4 pos = ViewProjection * Transform(vertex);
+	float invW = 1.0 / pos.w;
+	fPosition = pos.xyz * invW;
+	//fPosition = foobar.xyz;
 	gl_Position = pos;
 }
 

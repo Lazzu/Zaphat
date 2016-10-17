@@ -45,6 +45,8 @@
   <ItemGroup>
     <Compile Include="Application\ZapApp.cs" />
     <Compile Include="Assets\Asset.cs" />
+    <Compile Include="Core\DefaultViewProjectionBuffer.cs" />
+    <Compile Include="Core\DefaultViewProjectionData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\ShaderProgram.cs" />
     <Compile Include="Rendering\Shader.cs" />
@@ -84,14 +86,7 @@
     <Compile Include="Assets\IAssetManager.cs" />
     <Compile Include="Assets\Meshes\DefaultMeshData.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Sprites\" />
-    <Folder Include="Core\" />
-    <Folder Include="Utilities\" />
-    <Folder Include="Assets\Textures\" />
-    <Folder Include="Assets\Meshes\" />
-    <Folder Include="Assets\Materials\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -3,8 +3,11 @@ namespace Zaphat.Core
 {
 	public class DefaultTransformBuffer : UniformBufferObject<DefaultTransformData>
 	{
+        int floatSize;
+
 		public DefaultTransformBuffer()
 		{
+            floatSize = sizeof(float);
 			ShadowStore = false;
 		}
 
@@ -12,7 +15,7 @@ namespace Zaphat.Core
 
 		public void UpdateData()
 		{
-			Upload(new DefaultTransformData[] { Data });
+			Upload(ref Data);
 		}
 
 		public void UpdateData(DefaultTransformData data)
@@ -27,7 +30,7 @@ namespace Zaphat.Core
 			var data = new float[] {
 				position.X, position.Y, position.Z, 1.0f,
 			};
-			UploadRangeRaw(data, 0, 4);
+			UploadRangeRaw(data, 0, 4 * floatSize);
 		}
 
 		public void UpdateRotation(Quaternion rotation)
@@ -36,7 +39,8 @@ namespace Zaphat.Core
 			var data = new float[] {
 				rotation.X, rotation.Y, rotation.Z, rotation.W,
 			};
-			UploadRangeRaw(data, 4, 4);
+            Bind();
+			UploadRangeRaw(data, 4 * floatSize, 4 * floatSize);
 		}
 
 		public void UpdateScale(Vector3 scale)
@@ -45,7 +49,7 @@ namespace Zaphat.Core
 			var data = new float[] {
 				scale.X, scale.Y, scale.Z, 0f
 			};
-			UploadRangeRaw(data, 8, 4);
+			UploadRangeRaw(data, 8 * floatSize, 4 * floatSize);
 		}
 
 		public void UpdatePositionRotationScale(Vector4 position, Quaternion rotation, Vector4 scale)
@@ -58,31 +62,7 @@ namespace Zaphat.Core
 				rotation.X, rotation.Y, rotation.Z, rotation.W,
 				scale.X, scale.Y, scale.Z, 0f
 			};
-			UploadRangeRaw(data, 0, 12);
-		}
-
-		public void UpdateViewProjection(Matrix4 viewProjection)
-		{
-			Data.ViewProjection = viewProjection;
-			var data = new float[] {
-				viewProjection.M11,
-				viewProjection.M12,
-				viewProjection.M13,
-				viewProjection.M14,
-				viewProjection.M21,
-				viewProjection.M22,
-				viewProjection.M23,
-				viewProjection.M24,
-				viewProjection.M31,
-				viewProjection.M32,
-				viewProjection.M33,
-				viewProjection.M34,
-				viewProjection.M41,
-				viewProjection.M42,
-				viewProjection.M43,
-				viewProjection.M44,
-			};
-			UploadRangeRaw(data, 12, 16);
+			UploadRangeRaw(data, 0, 12 * floatSize);
 		}
 	}
 }
