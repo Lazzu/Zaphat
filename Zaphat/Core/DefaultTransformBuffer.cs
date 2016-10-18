@@ -3,11 +3,12 @@ namespace Zaphat.Core
 {
 	public class DefaultTransformBuffer : UniformBufferObject<DefaultTransformData>
 	{
-        int floatSize;
+		readonly int floatSize;
 
 		public DefaultTransformBuffer()
 		{
-            floatSize = sizeof(float);
+			BufferUsageHint = OpenTK.Graphics.OpenGL4.BufferUsageHint.StreamDraw;
+			floatSize = sizeof(float);
 			ShadowStore = false;
 		}
 
@@ -30,6 +31,7 @@ namespace Zaphat.Core
 			var data = new float[] {
 				position.X, position.Y, position.Z, 1.0f,
 			};
+			Bind();
 			UploadRangeRaw(data, 0, 4 * floatSize);
 		}
 
@@ -39,7 +41,7 @@ namespace Zaphat.Core
 			var data = new float[] {
 				rotation.X, rotation.Y, rotation.Z, rotation.W,
 			};
-            Bind();
+			Bind();
 			UploadRangeRaw(data, 4 * floatSize, 4 * floatSize);
 		}
 
@@ -49,6 +51,7 @@ namespace Zaphat.Core
 			var data = new float[] {
 				scale.X, scale.Y, scale.Z, 0f
 			};
+			Bind();
 			UploadRangeRaw(data, 8 * floatSize, 4 * floatSize);
 		}
 
@@ -62,6 +65,7 @@ namespace Zaphat.Core
 				rotation.X, rotation.Y, rotation.Z, rotation.W,
 				scale.X, scale.Y, scale.Z, 0f
 			};
+			Bind();
 			UploadRangeRaw(data, 0, 12 * floatSize);
 		}
 	}

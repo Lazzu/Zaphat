@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using OpenTK.Graphics.OpenGL4;
 
 namespace Zaphat.Utilities
 {
@@ -29,6 +30,45 @@ namespace Zaphat.Utilities
 					prevTime = current;
 				}
 				return prevTimeString;
+			}
+		}
+
+		public static void CheckGLError()
+		{
+			ErrorCode error = GL.GetError();
+
+			if (error == ErrorCode.NoError)
+				return;
+
+			for (; error != ErrorCode.NoError; error = GL.GetError())
+			{
+				switch (error)
+				{
+					case ErrorCode.ContextLost:
+						Debug("Context lost!", 1);
+						break;
+					case ErrorCode.InvalidEnum:
+						Debug("Invalid Enum!", 1);
+						break;
+					case ErrorCode.InvalidFramebufferOperation:
+						Debug("Invalid framebuffer operation!", 1);
+						break;
+					case ErrorCode.InvalidOperation:
+						Debug("Invalid operation!", 1);
+						break;
+					case ErrorCode.InvalidValue:
+						Debug("Invalid value!", 1);
+						break;
+					case ErrorCode.OutOfMemory:
+						Debug("Out of memory!", 1);
+						break;
+					case ErrorCode.TableTooLarge:
+						Debug("Table too large!", 1);
+						break;
+					case ErrorCode.TextureTooLargeExt:
+						Debug("Texture too large!", 1);
+						break;
+				}
 			}
 		}
 
@@ -71,15 +111,15 @@ namespace Zaphat.Utilities
 			Console.WriteLine("[{0}][{2}] {1}", CurrentTime, text, tag);
 		}
 
-		[Conditional("DEBUG")]
+		//[Conditional("DEBUG")]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void Debug(string text)
+		public static void Debug(string text, int traceSkipOffset = 0)
 		{
-			var trace = new StackTrace();
+			var trace = new StackTrace(1 + traceSkipOffset, true);
 			System.Diagnostics.Debug.WriteLine("[{0}][Debug] {1}\nStack Trace:\n{2}", CurrentTime, text, trace.ToString());
 		}
 
-		[Conditional("DEBUG")]
+		//[Conditional("DEBUG")]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void VerboseDebug(string text)
 		{

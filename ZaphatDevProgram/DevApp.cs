@@ -5,8 +5,6 @@ using OpenTK.Graphics;
 using Zaphat.Application;
 using Zaphat.Core;
 using Zaphat.Rendering;
-using Zaphat.Assets.Meshes;
-using System.Collections.Generic;
 
 namespace ZaphatDevProgram
 {
@@ -26,7 +24,11 @@ namespace ZaphatDevProgram
 		ArrayBufferVector4 colors;
 
 		DefaultTransformBuffer Transform;
-        DefaultViewProjectionBuffer ViewProjection;
+		DefaultViewProjectionBuffer ViewProjection;
+
+		Matrix4 projectionMatrix;
+		Matrix4 viewMatrix;
+		Vector3 CameraPosition;
 
 		public DevApp(int width, int height, GraphicsMode mode) : base(width, height, mode)
 		{
@@ -110,18 +112,16 @@ namespace ZaphatDevProgram
 			program.Link();
 
 			Transform = new DefaultTransformBuffer();
-
 			program.BindUniformBlock("TransformBlock", Transform);
 
-        	var projectionMatrix = Matrix4.Identity;
-			var viewMatrix = Matrix4.Identity;
+			CameraPosition = new Vector3(0f, 0f, -10f);
 
-            var cameraPosition = new Vector3(0f, 0f, 0f);
+			projectionMatrix = Matrix4.Identity;
 
-            Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4.0f, (float)Width / (float)Height, 1.0f, 10.0f, out projectionMatrix);
-            Matrix4.CreateTranslation(ref cameraPosition, out viewMatrix);
+			//Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4.0f, (float)Width / (float)Height, 1.0f, 10.0f, out projectionMatrix);
+			Matrix4.CreateTranslation(ref CameraPosition, out viewMatrix);
 
-            Transform.Data = new DefaultTransformData()
+			Transform.Data = new DefaultTransformData()
 			{
 				Position = new Vector4(0f, 0f, 0f, 1f),
 				Rotation = Quaternion.Identity,
@@ -130,10 +130,13 @@ namespace ZaphatDevProgram
 
 			Transform.UpdateData();
 
-            ViewProjection = new DefaultViewProjectionBuffer();
-            ViewProjection.UpdateData();
-            program.BindUniformBlock("ViewProjectionBlock", ViewProjection);
-            //ViewProjection.Update(viewMatrix, projectionMatrix, cameraPosition, new Vector3(0, 0, 1f));
+
+			ViewProjection = new DefaultViewProjectionBuffer();
+			program.BindUniformBlock("ViewProjectionBlock", ViewProjection);
+			ViewProjection.UpdateData();
+
+
+			Zaphat.Utilities.Logger.CheckGLError();
 		}
 
 		double totalTime = 0.0;
@@ -145,15 +148,18 @@ namespace ZaphatDevProgram
 			GL.Viewport(0, 0, Width, Height);
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            program.Use();
+			program.Use();
 
-            //ViewProjection.Update(Matrix4.Identity, Matrix4.Identity, Vector3.Zero, Vector3.One.Normalized());
-            program.BindUniformBlock("ViewProjectionBlock", ViewProjection);
+			//CameraPosition = new Vector3(0f, 0f, 0f);
+			CameraPosition = new Vector3((float)Math.Sin(totalTime), (float)Math.Cos(totalTime), 0f);
 
-            //Transform.UpdateRotation(Quaternion.FromEulerAngles((float)-totalTime, 0.0f, 0.0f));
-            program.BindUniformBlock("TransformBlock", Transform);
+			Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4.0f, ((float)Width) / ((float)Height), 1f, 100.0f, out projectionMatrix);
+			Matrix4.CreateTranslation(ref CameraPosition, out viewMatrix);
 
-            var lightPosition = new Vector3((float)Math.Sin(totalTime), (float)Math.Cos(totalTime), 0.0f).Normalized();
+			ViewProjection.Update(viewMatrix, projectionMatrix, CameraPosition, new Vector3(0, 0, 1f));
+			Transform.UpdatePositionRotationScale(new Vector4(0f, 0f, 0f, 1f), Quaternion.FromEulerAngles((float)-totalTime, 0.0f, 0.0f), Vector4.One);
+
+			var lightPosition = new Vector3((float)Math.Sin(totalTime), (float)Math.Cos(totalTime), 0.0f).Normalized();
 			lightPosition *= (float)((Math.Sin(totalTime) + 1.0) * 0.5) + 0.25f;
 			lightPosition *= (float)((Math.Sin(totalTime * 0.9) + 1.0) * 0.5) + 0.25f;
 			lightPosition *= (float)((Math.Sin(totalTime * 0.8) + 1.0) * 0.5) + 0.25f;
@@ -165,6 +171,10 @@ namespace ZaphatDevProgram
 			GL.DrawElements(PrimitiveType.TriangleStrip, 4, DrawElementsType.UnsignedInt, IntPtr.Zero);
 
 			SwapBuffers();
+
+			Zaphat.Utilities.Logger.CheckGLError();
 		}
+
+
 	}
 }

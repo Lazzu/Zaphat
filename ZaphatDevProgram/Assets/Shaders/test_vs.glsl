@@ -49,13 +49,14 @@ vec3 RotateNormal(vec3 n)
 void main()
 {
 	tcoord = uv.xy;
-	fColor = color;
+	//fColor = vec4(min(vec3(1.0), max(vec3(0.0), abs(Projection[gl_VertexID].xyz))), 1.0);
+	fColor = vec4((ViewProjection[0].xyz), 1.0);
 	fNormal = RotateNormal(normal);
-	//vec4 pos = Transform(vertex);
-	vec4 pos = ViewProjection * Transform(vertex);
+	//vec4 pos = Projection * View * Transform(vertex);
+	vec4 pos = Transform(vertex);
 	float invW = 1.0 / pos.w;
 	fPosition = pos.xyz * invW;
-	//fPosition = foobar.xyz;
+	//fPosition = View[0].xyz;
 	gl_Position = pos;
 }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Collections.Generic;
 using OpenTK.Graphics.OpenGL4;
 
 namespace Zaphat.Rendering
@@ -58,14 +59,18 @@ namespace Zaphat.Rendering
 			{
 				string info;
 				GL.GetShaderInfoLog(Name, out info);
-
-				throw new Exception(info); // TODO: Replace exception with custom shader exception
+				Zaphat.Utilities.Logger.Debug(info);
 			}
 		}
 
 		public void ShaderSourceFile(string path)
 		{
-			var source = string.Join("\n", File.ReadLines(path));
+			var lines = new List<string>(File.ReadLines(path));
+
+			lines[1] = string.Format("#line 2 \"{0}\"\n{1}", path, lines[1]);
+
+			var source = string.Join("\n", lines);
+
 			ShaderSource(source);
 		}
 	}

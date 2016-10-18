@@ -76,7 +76,9 @@ namespace Zaphat.Core
 				throw new GraphicsException("Setting vertex attribute array buffer pointer is only supported for BufferTarget.ArrayBuffer");
 
 			GL.EnableVertexAttribArray(attrib);
+			Zaphat.Utilities.Logger.CheckGLError();
 			GL.VertexAttribPointer(attrib, elements, type, false, Stride, offset);
+			Zaphat.Utilities.Logger.CheckGLError();
 		}
 
 		/// <summary>
@@ -85,6 +87,7 @@ namespace Zaphat.Core
 		public void Bind()
 		{
 			GL.BindBuffer(Target, Name);
+			Zaphat.Utilities.Logger.CheckGLError();
 		}
 
 		/// <summary>
@@ -102,6 +105,7 @@ namespace Zaphat.Core
 		public void UnBind()
 		{
 			GL.BindBuffer(Target, 0);
+			Zaphat.Utilities.Logger.CheckGLError();
 		}
 
 		/// <summary>
@@ -111,8 +115,22 @@ namespace Zaphat.Core
 		public void Reserve(int elements)
 		{
 			GL.BufferData(Target, elements * ElementSizeInBytes, IntPtr.Zero, BufferUsageHint);
+			Zaphat.Utilities.Logger.CheckGLError();
 			_Reserved = true;
 			_ReservedBytes = elements * ElementSizeInBytes;
+		}
+
+		public void ReserveAtLeast(int elements)
+		{
+			var bytes = elements * ElementSizeInBytes;
+
+			if (_ReservedBytes >= bytes)
+				return;
+
+			GL.BufferData(Target, bytes, IntPtr.Zero, BufferUsageHint);
+			Zaphat.Utilities.Logger.CheckGLError();
+			_Reserved = true;
+			_ReservedBytes = bytes;
 		}
 
 		/// <summary>
@@ -122,7 +140,9 @@ namespace Zaphat.Core
 		/// <returns>The pointer to the GPU memory</returns>
 		public IntPtr Map(BufferAccess access)
 		{
-			return GL.MapBuffer(Target, access);
+			var returnValue = GL.MapBuffer(Target, access);
+			Zaphat.Utilities.Logger.CheckGLError();
+			return returnValue;
 		}
 
 		/// <summary>
@@ -132,6 +152,7 @@ namespace Zaphat.Core
 		{
 			GL.UnmapBuffer(Target);
 			Dirty = false;
+			Zaphat.Utilities.Logger.CheckGLError();
 		}
 
 		/// <summary>
@@ -143,7 +164,7 @@ namespace Zaphat.Core
 		/// Upload raw data to the GPU to the beginning of the buffer.
 		/// </summary>
 		/// <param name="data">Data.</param>
-        /// <param name="bytes">Data size in bytes</param>
+		/// <param name="bytes">Data size in bytes</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public void UploadRaw<T>(T[] data, int bytes) where T : struct
 		{
@@ -153,7 +174,8 @@ namespace Zaphat.Core
 				_ReservedBytes = bytes;
 			}
 
-            UploadRangeRaw(data, 0, bytes);
+			UploadRangeRaw(data, 0, bytes);
+			Zaphat.Utilities.Logger.CheckGLError();
 		}
 
 		/// <summary>
@@ -166,6 +188,7 @@ namespace Zaphat.Core
 		public void UploadRangeRaw<T>(T[] data, int fromBytes, int bytes) where T : struct
 		{
 			GL.BufferSubData(Target, (IntPtr)(fromBytes), bytes, data);
+			Zaphat.Utilities.Logger.CheckGLError();
 		}
 	}
 
@@ -208,6 +231,8 @@ namespace Zaphat.Core
 			Target = target;
 			int name;
 			GL.GenBuffers(1, out name);
+
+			Zaphat.Utilities.Logger.CheckGLError();
 
 			if (name == 0)
 				throw new GraphicsException("Could not generate buffer.");
@@ -258,49 +283,51 @@ namespace Zaphat.Core
 			}
 		}
 
-        public void Upload(T data)
-        {
-            Dirty = false;
+		public void Upload(T data)
+		{
+			Dirty = false;
 
-            if(ShadowStore)
-            {
-                _data = new[] { data };
-            }
+			if (ShadowStore)
+			{
+				_data = new[] { data };
+			}
 
-            _Reserved = _Reserved && ElementSizeInBytes == _ReservedBytes;
+			_Reserved = _Reserved && ElementSizeInBytes == _ReservedBytes;
 
-            if(!_Reserved)
-            {
-                Reserve(1);
-            }
+			if (!_Reserved)
+			{
+				Reserve(1);
+			}
 
-            GL.BufferSubData(Target, IntPtr.Zero, _ReservedBytes, ref data);
-        }
+			GL.BufferSubData(Target, IntPtr.Zero, _ReservedBytes, ref data);
+			Zaphat.Utilities.Logger.CheckGLError();
+		}
 
-        public void Upload(ref T data)
-        {
-            Dirty = false;
+		public void Upload(ref T data)
+		{
+			Dirty = false;
 
-            if (ShadowStore)
-            {
-                _data = new[] { data };
-            }
+			if (ShadowStore)
+			{
+				_data = new[] { data };
+			}
 
-            _Reserved = _Reserved && ElementSizeInBytes == _ReservedBytes;
+			_Reserved = _Reserved && ElementSizeInBytes == _ReservedBytes;
 
-            if (!_Reserved)
-            {
-                Reserve(1);
-            }
+			if (!_Reserved)
+			{
+				Reserve(1);
+			}
 
-            GL.BufferSubData(Target, IntPtr.Zero, _ReservedBytes, ref data);
-        }
+			GL.BufferSubData(Target, IntPtr.Zero, _ReservedBytes, ref data);
+			Zaphat.Utilities.Logger.CheckGLError();
+		}
 
-        /// <summary>
-        /// Upload an array of data to the GPU.
-        /// </summary>
-        /// <param name="data">The uploaded data.</param>
-        public void Upload(T[] data)
+		/// <summary>
+		/// Upload an array of data to the GPU.
+		/// </summary>
+		/// <param name="data">The uploaded data.</param>
+		public void Upload(T[] data)
 		{
 			Dirty = false;
 
@@ -319,6 +346,7 @@ namespace Zaphat.Core
 			}
 
 			GL.BufferSubData(Target, IntPtr.Zero, _ReservedBytes, data);
+			Zaphat.Utilities.Logger.CheckGLError();
 		}
 
 		/// <summary>
@@ -335,6 +363,7 @@ namespace Zaphat.Core
 			Array.Copy(_data, from, tmp, 0, count);
 
 			GL.BufferSubData(Target, (IntPtr)(from * ElementSizeInBytes), count * ElementSizeInBytes, _data);
+			Zaphat.Utilities.Logger.CheckGLError();
 		}
 
 		/// <summary>
@@ -361,6 +390,7 @@ namespace Zaphat.Core
 			}
 
 			GL.BufferSubData(Target, (IntPtr)(from * ElementSizeInBytes), count * ElementSizeInBytes, data);
+			Zaphat.Utilities.Logger.CheckGLError();
 		}
 
 		/// <summary>

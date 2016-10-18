@@ -32,14 +32,7 @@ void main( void )
 
 	RGBA = vec4(light * fColor.rgb, fColor.a );
 
-
-
-
-
-
-
-
-	RGBA = vec4(abs(fPosition.xyz), 1.0);
+	RGBA = vec4(abs(fColor.xyz), 1.0);
 
 
 
