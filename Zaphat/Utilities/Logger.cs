@@ -33,7 +33,7 @@ namespace Zaphat.Utilities
 			}
 		}
 
-		public static void CheckGLError()
+		public static void CheckGLError(string debugText = "")
 		{
 			ErrorCode error = GL.GetError();
 
@@ -45,28 +45,28 @@ namespace Zaphat.Utilities
 				switch (error)
 				{
 					case ErrorCode.ContextLost:
-						Debug("Context lost!", 1);
+						Debug("Context lost! " + debugText, 1);
 						break;
 					case ErrorCode.InvalidEnum:
-						Debug("Invalid Enum!", 1);
+						Debug("Invalid Enum! " + debugText, 1);
 						break;
 					case ErrorCode.InvalidFramebufferOperation:
-						Debug("Invalid framebuffer operation!", 1);
+						Debug("Invalid framebuffer operation! " + debugText, 1);
 						break;
 					case ErrorCode.InvalidOperation:
-						Debug("Invalid operation!", 1);
+						Debug("Invalid operation! " + debugText, 1);
 						break;
 					case ErrorCode.InvalidValue:
-						Debug("Invalid value!", 1);
+						Debug("Invalid value! " + debugText, 1);
 						break;
 					case ErrorCode.OutOfMemory:
-						Debug("Out of memory!", 1);
+						Debug("Out of memory! " + debugText, 1);
 						break;
 					case ErrorCode.TableTooLarge:
-						Debug("Table too large!", 1);
+						Debug("Table too large! " + debugText, 1);
 						break;
 					case ErrorCode.TextureTooLargeExt:
-						Debug("Texture too large!", 1);
+						Debug("Texture too large! " + debugText, 1);
 						break;
 				}
 			}
@@ -116,7 +116,7 @@ namespace Zaphat.Utilities
 		public static void Debug(string text, int traceSkipOffset = 0)
 		{
 			var trace = new StackTrace(1 + traceSkipOffset, true);
-			System.Diagnostics.Debug.WriteLine("[{0}][Debug] {1}\nStack Trace:\n{2}", CurrentTime, text, trace.ToString());
+			System.Diagnostics.Debug.WriteLine("[{0}][Debug] {1}\nStack Trace:\n{2}\n\n", CurrentTime, text, trace.ToString());
 		}
 
 		//[Conditional("DEBUG")]

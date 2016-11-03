@@ -66,6 +66,7 @@ namespace Zaphat.Core
 				scale.X, scale.Y, scale.Z, 0f
 			};
 			Bind();
+			//Upload(Data);
 			UploadRangeRaw(data, 0, 12 * floatSize);
 		}
 	}

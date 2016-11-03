@@ -47,16 +47,15 @@ namespace Zaphat.Core
 		/// <param name="cameraWorldDirection">The camera direction vector in world</param>
 		public void Update(Matrix4 view, Matrix4 projection, Vector3 cameraWorldPos, Vector3 cameraWorldDirection)
 		{
+			view.Transpose();
+
+
 			var vpMatrix = view * projection;
 			var invView = view.Inverted();
 
-			float[] data = new float[]
+			var d = new float[]
 			{
-				cameraWorldPos.X, cameraWorldPos.Y, cameraWorldPos.Z, 1.0f,
-				//vpMatrix.M11, vpMatrix.M12, vpMatrix.M13, vpMatrix.M14,
-				vpMatrix.M21, vpMatrix.M22, vpMatrix.M23, vpMatrix.M24,
-				vpMatrix.M31, vpMatrix.M32, vpMatrix.M33, vpMatrix.M34,
-				vpMatrix.M41, vpMatrix.M42, vpMatrix.M43, vpMatrix.M44,
+				//cameraWorldPos.X, cameraWorldPos.Y, cameraWorldPos.Z, 1.0f,
 
 				view.M11, view.M12, view.M13, view.M14,
 				view.M21, view.M22, view.M23, view.M24,
@@ -73,10 +72,17 @@ namespace Zaphat.Core
 				invView.M31, invView.M32, invView.M33, invView.M34,
 				invView.M41, invView.M42, invView.M43, invView.M44,
 
+				vpMatrix.M11, vpMatrix.M12, vpMatrix.M13, vpMatrix.M14,
+				vpMatrix.M21, vpMatrix.M22, vpMatrix.M23, vpMatrix.M24,
+				vpMatrix.M31, vpMatrix.M32, vpMatrix.M33, vpMatrix.M34,
+				vpMatrix.M41, vpMatrix.M42, vpMatrix.M43, vpMatrix.M44,
+
 				cameraWorldPos.X, cameraWorldPos.Y, cameraWorldPos.Z, 1.0f,
+
 				cameraWorldDirection.X, cameraWorldDirection.Y, cameraWorldDirection.Z, 0.0f
 			};
 
+			Zaphat.Utilities.Logger.Log(view.ToString());
 
 			/*Data.View = view;
 			Data.Projection = projection;
@@ -86,8 +92,9 @@ namespace Zaphat.Core
 			Data.CameraWorldDirection = new Vector4(cameraWorldDirection, 0.0f);*/
 
 			Bind();
-			//ReserveAtLeast(1);
-			UploadRangeRaw(data, 0, ElementSizeInBytes);
+			CleanAndReserveGPUMemAtLeast(1);
+			UploadRangeRaw(d, 0, ElementSizeInBytes);
+			//UploadRangeRaw(new[] { Data }, 0, ElementSizeInBytes);
 		}
 	}
 }
