@@ -2,6 +2,7 @@
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 namespace Zaphat.Core
 {
@@ -86,6 +87,7 @@ namespace Zaphat.Core
 		/// </summary>
 		public void Bind()
 		{
+			Debug.WriteLine("Bind buffer {0} in to target {1}", Name, Target);
 			GL.BindBuffer(Target, Name);
 			Zaphat.Utilities.Logger.CheckGLError();
 		}
@@ -112,15 +114,15 @@ namespace Zaphat.Core
 		/// Reserve memory from the GPU for the amount of elements of type T given.
 		/// </summary>
 		/// <param name="elements">The amount of elements.</param>
-		public void Reserve(int elements)
+		public void CleanAndReserveGPUMemExactly(int elements)
 		{
-			GL.BufferData(Target, elements * ElementSizeInBytes, IntPtr.Zero, BufferUsageHint);
-			Zaphat.Utilities.Logger.CheckGLError();
 			_Reserved = true;
 			_ReservedBytes = elements * ElementSizeInBytes;
+			GL.BufferData(Target, _ReservedBytes, IntPtr.Zero, BufferUsageHint);
+			Zaphat.Utilities.Logger.CheckGLError(string.Format("ReserveGPUMem elements:{0}, _ReservedBytes:{1}", elements, _ReservedBytes));
 		}
 
-		public void ReserveAtLeast(int elements)
+		public void CleanAndReserveGPUMemAtLeast(int elements)
 		{
 			var bytes = elements * ElementSizeInBytes;
 
@@ -128,7 +130,7 @@ namespace Zaphat.Core
 				return;
 
 			GL.BufferData(Target, bytes, IntPtr.Zero, BufferUsageHint);
-			Zaphat.Utilities.Logger.CheckGLError();
+			Zaphat.Utilities.Logger.CheckGLError(string.Format("ReserveAtLeast elements:{0}, bytes:{1}", elements, bytes));
 			_Reserved = true;
 			_ReservedBytes = bytes;
 		}
@@ -141,7 +143,7 @@ namespace Zaphat.Core
 		public IntPtr Map(BufferAccess access)
 		{
 			var returnValue = GL.MapBuffer(Target, access);
-			Zaphat.Utilities.Logger.CheckGLError();
+			Zaphat.Utilities.Logger.CheckGLError(string.Format("Target:{0}, access:{1}", Target, access));
 			return returnValue;
 		}
 
@@ -152,7 +154,7 @@ namespace Zaphat.Core
 		{
 			GL.UnmapBuffer(Target);
 			Dirty = false;
-			Zaphat.Utilities.Logger.CheckGLError();
+			Zaphat.Utilities.Logger.CheckGLError(string.Format("Target:{0}", Target));
 		}
 
 		/// <summary>
@@ -175,7 +177,7 @@ namespace Zaphat.Core
 			}
 
 			UploadRangeRaw(data, 0, bytes);
-			Zaphat.Utilities.Logger.CheckGLError();
+			Zaphat.Utilities.Logger.CheckGLError(string.Format("UploadRaw to:{0}", bytes));
 		}
 
 		/// <summary>
@@ -187,8 +189,10 @@ namespace Zaphat.Core
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public void UploadRangeRaw<T>(T[] data, int fromBytes, int bytes) where T : struct
 		{
+			Debug.WriteLine("Uploading data. from:{4}, to:{5} First four items: {0}, {1}, {2}, {3}", data[0], data[1], data[2], data[3], fromBytes, bytes);
+
 			GL.BufferSubData(Target, (IntPtr)(fromBytes), bytes, data);
-			Zaphat.Utilities.Logger.CheckGLError();
+			Zaphat.Utilities.Logger.CheckGLError(string.Format("UploadRangeRaw from:{0}, to:{1}", fromBytes, bytes));
 		}
 	}
 
@@ -232,6 +236,8 @@ namespace Zaphat.Core
 			int name;
 			GL.GenBuffers(1, out name);
 
+			Debug.WriteLine("Generated buffer {0}", name);
+
 			Zaphat.Utilities.Logger.CheckGLError();
 
 			if (name == 0)
@@ -270,12 +276,10 @@ namespace Zaphat.Core
 
 			if (!_Reserved)
 			{
-				Reserve(bytes);
+				CleanAndReserveGPUMemExactly(bytes);
 			}
-			else
-			{
-				GL.BufferSubData(Target, IntPtr.Zero, _ReservedBytes, _data);
-			}
+
+			GL.BufferSubData(Target, IntPtr.Zero, _ReservedBytes, _data);
 
 			if (!ShadowStore)
 			{
@@ -296,11 +300,11 @@ namespace Zaphat.Core
 
 			if (!_Reserved)
 			{
-				Reserve(1);
+				CleanAndReserveGPUMemExactly(1);
 			}
 
-			GL.BufferSubData(Target, IntPtr.Zero, _ReservedBytes, ref data);
-			Zaphat.Utilities.Logger.CheckGLError();
+			GL.BufferSubData(Target, IntPtr.Zero, _ReservedBytes, new[] { data });
+			Zaphat.Utilities.Logger.CheckGLError(string.Format("Upload(T data) _Reserved:{0}", _ReservedBytes));
 		}
 
 		public void Upload(ref T data)
@@ -316,11 +320,11 @@ namespace Zaphat.Core
 
 			if (!_Reserved)
 			{
-				Reserve(1);
+				CleanAndReserveGPUMemExactly(1);
 			}
 
-			GL.BufferSubData(Target, IntPtr.Zero, _ReservedBytes, ref data);
-			Zaphat.Utilities.Logger.CheckGLError();
+			GL.BufferSubData(Target, IntPtr.Zero, _ReservedBytes, new[] { data });
+			Zaphat.Utilities.Logger.CheckGLError(string.Format("Upload(ref T data) _Reserved:{0}", _ReservedBytes));
 		}
 
 		/// <summary>
@@ -342,11 +346,11 @@ namespace Zaphat.Core
 
 			if (!_Reserved)
 			{
-				Reserve(data.Length);
+				CleanAndReserveGPUMemExactly(data.Length);
 			}
 
 			GL.BufferSubData(Target, IntPtr.Zero, _ReservedBytes, data);
-			Zaphat.Utilities.Logger.CheckGLError();
+			Zaphat.Utilities.Logger.CheckGLError(string.Format("Upload(T[] data) _Reserved:{0}", _ReservedBytes));
 		}
 
 		/// <summary>
@@ -363,7 +367,7 @@ namespace Zaphat.Core
 			Array.Copy(_data, from, tmp, 0, count);
 
 			GL.BufferSubData(Target, (IntPtr)(from * ElementSizeInBytes), count * ElementSizeInBytes, _data);
-			Zaphat.Utilities.Logger.CheckGLError();
+			Zaphat.Utilities.Logger.CheckGLError(string.Format("UploadRange(int from, int count) from:{0}, count:{1}", from, count));
 		}
 
 		/// <summary>
@@ -390,7 +394,7 @@ namespace Zaphat.Core
 			}
 
 			GL.BufferSubData(Target, (IntPtr)(from * ElementSizeInBytes), count * ElementSizeInBytes, data);
-			Zaphat.Utilities.Logger.CheckGLError();
+			Zaphat.Utilities.Logger.CheckGLError(string.Format("UploadRange(T[] data, int from, int count) from:{0}, count:{1}", from, count));
 		}
 
 		/// <summary>
@@ -399,7 +403,7 @@ namespace Zaphat.Core
 		public override void Clear()
 		{
 			if (_data.Length > 0)
-				Reserve(_data.Length);
+				CleanAndReserveGPUMemExactly(_data.Length);
 
 			_data = null;
 		}
