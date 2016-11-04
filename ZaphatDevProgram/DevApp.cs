@@ -112,6 +112,7 @@ namespace ZaphatDevProgram
 			program.Link();
 
 			Transform = new DefaultTransformBuffer();
+            Transform.BindingPointIndex = 1;
 			program.BindUniformBlock("TransformBlock", Transform);
 
 			CameraPosition = new Vector3(0f, 0f, -10f);
@@ -132,6 +133,7 @@ namespace ZaphatDevProgram
 
 
 			ViewProjection = new DefaultViewProjectionBuffer();
+            ViewProjection.BindingPointIndex = 2;
 			program.BindUniformBlock("ViewProjectionBlock", ViewProjection);
 			ViewProjection.UpdateData();
 

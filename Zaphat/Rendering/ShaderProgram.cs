@@ -126,12 +126,18 @@ namespace Zaphat.Rendering
 			return location;
 		}
 
-		public void BindUniformBlock(string name, Zaphat.Core.Buffer buffer)
+        public void BindUniformBlock<T>(string name, Zaphat.Core.UniformBufferObject<T> buffer) where T : struct
+        {
+            var index = GetUniformBlockIndex(name);
+            if (index < 0)
+                return;
+            GL.BindBufferBase(BufferRangeTarget.UniformBuffer, index, buffer.BindingPointIndex);
+        }
+
+        public void BindUniformBlock<T>(string name, int bindingPointIndex, Zaphat.Core.UniformBufferObject<T> buffer) where T : struct
 		{
-			var index = GetUniformBlockIndex(name);
-			if (index < 0)
-				return;
-			GL.BindBufferBase(BufferRangeTarget.UniformBuffer, index, buffer.Name);
+            buffer.BindingPointIndex = bindingPointIndex;
+            BindUniformBlock(name, buffer);
 		}
 
 		public void SendUniform(string name, float value)
