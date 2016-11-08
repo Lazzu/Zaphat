@@ -87,7 +87,6 @@ namespace Zaphat.Core
 		/// </summary>
 		public void Bind()
 		{
-			Debug.WriteLine("Bind buffer {0} in to target {1}", Name, Target);
 			GL.BindBuffer(Target, Name);
 			Zaphat.Utilities.Logger.CheckGLError();
 		}
@@ -189,8 +188,6 @@ namespace Zaphat.Core
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public void UploadRangeRaw<T>(T[] data, int fromBytes, int bytes) where T : struct
 		{
-			Debug.WriteLine("Uploading data. from:{4}, to:{5} First four items: {0}, {1}, {2}, {3}", data[0], data[1], data[2], data[3], fromBytes, bytes);
-
 			GL.BufferSubData(Target, (IntPtr)(fromBytes), bytes, data);
 			Zaphat.Utilities.Logger.CheckGLError(string.Format("UploadRangeRaw from:{0}, to:{1}", fromBytes, bytes));
 		}
@@ -235,8 +232,6 @@ namespace Zaphat.Core
 			Target = target;
 			int name;
 			GL.GenBuffers(1, out name);
-
-			Debug.WriteLine("Generated buffer {0}", name);
 
 			Zaphat.Utilities.Logger.CheckGLError();
 

@@ -148,7 +148,6 @@ namespace ZaphatDevProgram
 
 			Transform.UpdateData();
 
-			System.Diagnostics.Debug.WriteLine("Create ViewProjection buffer");
 			ViewProjection = new DefaultViewProjectionBuffer();
 			ViewProjection.BindingPoint = 2;
 			program.BindUniformBlock("ViewProjectionBlock", ViewProjection);

@@ -79,19 +79,9 @@ namespace Zaphat.Core
 				cameraWorldDirection.X, cameraWorldDirection.Y, cameraWorldDirection.Z, 0.0f
 			};
 
-			Zaphat.Utilities.Logger.Log(view.ToString());
-
-			/*Data.View = view;
-			Data.Projection = projection;
-			Data.ViewProjection = projection * view;
-			Data.InvView = view.Inverted();
-			Data.CameraWorldPosition = new Vector4(cameraWorldPos, 1.0f);
-			Data.CameraWorldDirection = new Vector4(cameraWorldDirection, 0.0f);*/
-
 			Bind();
 			CleanAndReserveGPUMemAtLeast(1);
 			UploadRangeRaw(d, 0, ElementSizeInBytes);
-			//UploadRangeRaw(new[] { Data }, 0, ElementSizeInBytes);
 		}
 	}
 }
