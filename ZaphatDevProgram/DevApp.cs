@@ -33,7 +33,7 @@ namespace ZaphatDevProgram
 
 		public DevApp(int width, int height, GraphicsMode mode) : base(width, height, mode)
 		{
-			VSync = VSyncMode.Adaptive;
+			VSync = VSyncMode.On;
 		}
 
 		protected override void OnLoad(EventArgs e)
@@ -51,7 +51,12 @@ namespace ZaphatDevProgram
 			indices = new ElementArrayBuffer<int>();
 
 			var indexData = new int[] {
-				0,1,2,3
+				2, 1, 0, 2, 3, 1, // Bottom
+				4, 5, 6, 6, 5, 7, // Top
+				2, 0, 4, 2, 4, 6, // Left
+				1, 3, 5, 3, 7, 5, // Right
+				0, 1, 4, 4, 1, 5, // Front
+				3, 2, 6, 3, 6, 7, // Back
 			};
 
 			indices.Bind();
@@ -60,11 +65,15 @@ namespace ZaphatDevProgram
 			vertices = new ArrayBufferVector3();
 
 			var vertexData = new Vector3[] {
-				new Vector3(-1.0f, -1.0f, 0.0f),
-				new Vector3(1.0f, -1.0f, 0.0f),
-				new Vector3(-1.0f, 1.0f, 0.0f),
-				new Vector3(1.0f, 1.0f, 0.0f),
+				new Vector3(-1.0f, -1.0f, -1.0f),
+				new Vector3(1.0f, -1.0f, -1.0f),
+				new Vector3(-1.0f, -1.0f, 1.0f),
+				new Vector3(1.0f, -1.0f, 1.0f),
 
+				new Vector3(-1.0f, 1.0f, -1.0f),
+				new Vector3(1.0f, 1.0f, -1.0f),
+				new Vector3(-1.0f, 1.0f, 1.0f),
+				new Vector3(1.0f, 1.0f, 1.0f),
 			};
 
 			vertices.Bind();
@@ -76,8 +85,13 @@ namespace ZaphatDevProgram
 			var normalData = new Vector3[] {
 				new Vector3(-1.0f, -1.0f, -1.0f).Normalized(),
 				new Vector3(1.0f, -1.0f, -1.0f).Normalized(),
+				new Vector3(-1.0f, -1.0f, 1.0f).Normalized(),
+				new Vector3(1.0f, -1.0f, 1.0f).Normalized(),
+
 				new Vector3(-1.0f, 1.0f, -1.0f).Normalized(),
 				new Vector3(1.0f, 1.0f, -1.0f).Normalized(),
+				new Vector3(-1.0f, 1.0f, 1.0f).Normalized(),
+				new Vector3(1.0f, 1.0f, 1.0f).Normalized(),
 
 			};
 
@@ -88,10 +102,15 @@ namespace ZaphatDevProgram
 			colors = new ArrayBufferVector4();
 
 			var colorData = new Vector4[] {
+				new Vector4(0.0f, 0.0f, 0.0f, 1.0f),
 				new Vector4(1.0f, 0.0f, 0.0f, 1.0f),
-				new Vector4(0.0f, 1.0f, 0.0f, 1.0f),
 				new Vector4(0.0f, 0.0f, 1.0f, 1.0f),
 				new Vector4(1.0f, 0.0f, 1.0f, 1.0f),
+
+				new Vector4(0.0f, 1.0f, 0.0f, 1.0f),
+				new Vector4(1.0f, 1.0f, 0.0f, 1.0f),
+				new Vector4(0.0f, 1.0f, 1.0f, 1.0f),
+				new Vector4(1.0f, 1.0f, 1.0f, 1.0f),
 			};
 
 			colors.Bind();
@@ -145,23 +164,21 @@ namespace ZaphatDevProgram
 			totalTime += e.Time;
 
 			GL.Viewport(0, 0, Width, Height);
+			GL.Enable(EnableCap.DepthTest);
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
 			program.Use();
 
 			CameraPosition = new Vector3(0f, 0f, -25f);
 
-			//Zaphat.Utilities.Logger.Log(string.Format("Camera position: {0}", CameraPosition));
-
 			Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4.0f, ((float)Width) / ((float)Height), 0.01f, 150.0f, out projectionMatrix);
 			Matrix4.CreateTranslation(ref CameraPosition, out viewMatrix);
 
 			ViewProjection.Update(viewMatrix, projectionMatrix, CameraPosition, new Vector3(0, 0, -1f));
-			//Transform.UpdatePositionRotationScale(new Vector4(0f, 0f, 0f, 1f), Quaternion.FromEulerAngles((float)totalTime, 0.0f, 0.0f), Vector4.One * 0.5f);
 			Transform.UpdatePositionRotationScale(new Vector4(0f, 0f, 0f, 1f), Quaternion.FromEulerAngles(0.0f, (float)totalTime, 0.0f), Vector4.One * 5f);
 
 			vao.Bind();
-			GL.DrawElements(PrimitiveType.TriangleStrip, 4, DrawElementsType.UnsignedInt, IntPtr.Zero);
+			GL.DrawElements(PrimitiveType.Triangles, 36, DrawElementsType.UnsignedInt, IntPtr.Zero);
 
 			SwapBuffers();
 
