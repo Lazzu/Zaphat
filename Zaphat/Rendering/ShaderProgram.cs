@@ -132,14 +132,12 @@ namespace Zaphat.Rendering
 
 		public void BindUniformBlock<T>(string name, UniformBufferObject<T> buffer) where T : struct
 		{
-			Use();
-
 			var index = GetUniformBlockIndex(name);
+
 			if (index < 0)
 				return;
 
 			GL.UniformBlockBinding(GLName, index, buffer.BindingPoint);
-			GL.BindBufferBase(BufferRangeTarget.UniformBuffer, buffer.BindingPoint, buffer.Name);
 		}
 
 		public void SendUniform(string name, float value)

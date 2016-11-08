@@ -133,16 +133,6 @@ namespace ZaphatDevProgram
 			ViewProjection = new DefaultViewProjectionBuffer();
 			ViewProjection.BindingPoint = 2;
 			program.BindUniformBlock("ViewProjectionBlock", ViewProjection);
-			/*ViewProjection.Data = new DefaultViewProjectionData()
-			{
-				View = viewMatrix,
-				Projection = projectionMatrix,
-				ViewProjection = projectionMatrix * viewMatrix,
-				InvView = viewMatrix.Inverted(),
-				CameraWorldPosition = new Vector4(CameraPosition, 1.0f),
-				CameraWorldDirection = new Vector4(CameraDirection, 0.0f)
-			};*/
-			//ViewProjection.UpdateData();
 			ViewProjection.Update(viewMatrix, projectionMatrix, CameraPosition, CameraDirection);
 
 			Zaphat.Utilities.Logger.CheckGLError();
@@ -159,24 +149,17 @@ namespace ZaphatDevProgram
 
 			program.Use();
 
-			CameraPosition = new Vector3(0f, 0f, 10f);
-			//CameraPosition = new Vector3((float)Math.Sin(totalTime), (float)Math.Cos(totalTime), 0f);
+			CameraPosition = new Vector3(0f, 0f, 0f);
+			CameraPosition = new Vector3((float)Math.Sin(totalTime), (float)Math.Cos(totalTime), (float)Math.Sin(totalTime * 0.1f));
 
 			//Zaphat.Utilities.Logger.Log(string.Format("Camera position: {0}", CameraPosition));
 
-			Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4.0f, ((float)Width) / ((float)Height), 1f, 100.0f, out projectionMatrix);
+			Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4.0f, ((float)Width) / ((float)Height), 5f, 15.0f, out projectionMatrix);
 			Matrix4.CreateTranslation(ref CameraPosition, out viewMatrix);
 
-			ViewProjection.Update(viewMatrix, projectionMatrix, CameraPosition, new Vector3(0, 0, -1f));
+			ViewProjection.Update(viewMatrix, projectionMatrix, CameraPosition, new Vector3(0, 0, 1f));
 			Transform.UpdatePositionRotationScale(new Vector4(0f, 0f, 0f, 1f), Quaternion.FromEulerAngles((float)totalTime, 0.0f, 0.0f), Vector4.One * 0.5f);
-
-			var lightPosition = new Vector3((float)Math.Sin(totalTime), (float)Math.Cos(totalTime), 0.0f).Normalized();
-			lightPosition *= (float)((Math.Sin(totalTime) + 1.0) * 0.5) + 0.25f;
-			lightPosition *= (float)((Math.Sin(totalTime * 0.9) + 1.0) * 0.5) + 0.25f;
-			lightPosition *= (float)((Math.Sin(totalTime * 0.8) + 1.0) * 0.5) + 0.25f;
-			//lightPosition *= 2.75f;
-
-			program.SendUniform("lightPosition", ref lightPosition);
+			//Transform.UpdatePositionRotationScale(new Vector4(0f, 0f, 10f, 1f), Quaternion.FromEulerAngles((float)totalTime, 0.0f, 0.0f), Vector4.One * (float)Math.Sin(totalTime * 0.1234f) * 100f);
 
 			vao.Bind();
 			GL.DrawElements(PrimitiveType.TriangleStrip, 4, DrawElementsType.UnsignedInt, IntPtr.Zero);
