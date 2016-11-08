@@ -59,8 +59,8 @@ void main()
 	//fColor = abs(vec4(data_viewProjection.View[0].x, data_viewProjection.View[0].y, data_viewProjection.View[0].z, 1.0));
 	fNormal = RotateNormal(normal);
 	//vec4 pos = data_viewProjection.ViewProjection * vec4(vertex, 1.0);
-	//vec4 pos = data_viewProjection.ViewProjection * Transform(vertex);
-	vec4 pos = Transform(vertex);
+	vec4 pos = data_viewProjection.ViewProjection * Transform(vertex);
+	//vec4 pos = Transform(vertex);
 	//vec4 pos = vec4(vertex * 0.5, 1.0);
 	float invW = 1.0 / pos.w;
 	fPosition = pos.xyz * invW;

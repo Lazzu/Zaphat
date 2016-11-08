@@ -47,9 +47,6 @@ namespace Zaphat.Core
 		/// <param name="cameraWorldDirection">The camera direction vector in world</param>
 		public void Update(Matrix4 view, Matrix4 projection, Vector3 cameraWorldPos, Vector3 cameraWorldDirection)
 		{
-			view.Transpose();
-
-
 			var vpMatrix = view * projection;
 			var invView = view.Inverted();
 
