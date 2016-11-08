@@ -168,13 +168,15 @@ namespace ZaphatDevProgram
 
 			program.Use();
 
-			CameraPosition = new Vector3(0f, 0f, -25f);
+			CameraPosition = new Vector3((float)Math.Sin(totalTime) * 50 + (float)Math.Sin(totalTime * 0.5) * 10, (float)Math.Sin(totalTime * 0.912345) * 25, (float)Math.Cos(totalTime) * 50 + (float)Math.Cos(totalTime * 0.5) * 10);
 
-			Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4.0f, ((float)Width) / ((float)Height), 0.01f, 150.0f, out projectionMatrix);
-			Matrix4.CreateTranslation(ref CameraPosition, out viewMatrix);
+			Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4.0f, ((float)Width) / ((float)Height), 15f, 75.0f, out projectionMatrix);
+			viewMatrix = Matrix4.LookAt(CameraPosition, Vector3.Zero, Vector3.UnitY);
+			var cameraDir = new Vector4(0, 0, 1, 0) * viewMatrix;
 
-			ViewProjection.Update(viewMatrix, projectionMatrix, CameraPosition, new Vector3(0, 0, -1f));
-			Transform.UpdatePositionRotationScale(new Vector4(0f, 0f, 0f, 1f), Quaternion.FromEulerAngles(0.0f, (float)totalTime, 0.0f), Vector4.One * 5f);
+			ViewProjection.Update(viewMatrix, projectionMatrix, CameraPosition, new Vector3(cameraDir.X, cameraDir.Y, cameraDir.Z));
+			var rot = Quaternion.FromEulerAngles(0.0f, (float)totalTime, 0.0f);
+			Transform.UpdatePositionRotationScale(new Vector4(0f, 0f, 0f, 1f), Quaternion.Identity, Vector4.One * 10f);
 
 			vao.Bind();
 			GL.DrawElements(PrimitiveType.Triangles, 36, DrawElementsType.UnsignedInt, IntPtr.Zero);
