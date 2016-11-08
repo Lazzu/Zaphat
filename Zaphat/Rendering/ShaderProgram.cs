@@ -105,7 +105,6 @@ namespace Zaphat.Rendering
 			{
 				index = GL.GetUniformBlockIndex(GLName, name);
 
-				Zaphat.Utilities.Logger.Log(string.Format("Found uniform block {0} from index {1}", name, index));
 				Zaphat.Utilities.Logger.CheckGLError(string.Format("GLName: {0}, name:{1}", GLName, name));
 
 				if (index < 0)
