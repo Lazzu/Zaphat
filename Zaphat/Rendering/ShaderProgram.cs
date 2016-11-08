@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
+using Zaphat.Core;
 
 namespace Zaphat.Rendering
 {
@@ -129,7 +130,7 @@ namespace Zaphat.Rendering
 			return location;
 		}
 
-		public void BindUniformBlock(string name, Zaphat.Core.Buffer buffer)
+		public void BindUniformBlock<T>(string name, UniformBufferObject<T> buffer) where T : struct
 		{
 			Use();
 
@@ -137,8 +138,8 @@ namespace Zaphat.Rendering
 			if (index < 0)
 				return;
 
-			GL.BindBuffer(BufferTarget.UniformBuffer, buffer.Name);
-			//GL.BindBufferBase(BufferRangeTarget.UniformBuffer, index, buffer.Name);
+			GL.UniformBlockBinding(GLName, index, buffer.BindingPoint);
+			GL.BindBufferBase(BufferRangeTarget.UniformBuffer, buffer.BindingPoint, buffer.Name);
 		}
 
 		public void SendUniform(string name, float value)

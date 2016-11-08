@@ -30,6 +30,7 @@ namespace ZaphatDevProgram
 		Matrix4 viewMatrix = Matrix4.Identity;
 		Vector3 CameraPosition;
 		Vector3 CameraDirection = new Vector3(0, 0, 1f);
+
 		public DevApp(int width, int height, GraphicsMode mode) : base(width, height, mode)
 		{
 			VSync = VSyncMode.Adaptive;
@@ -113,13 +114,10 @@ namespace ZaphatDevProgram
 
 			System.Diagnostics.Debug.WriteLine("Create Transform buffer");
 			Transform = new DefaultTransformBuffer();
+			Transform.BindingPoint = 1;
 			program.BindUniformBlock("TransformBlock", Transform);
 
-			CameraPosition = new Vector3(0f, 0f, 10f);
-
-			//projectionMatrix = Matrix4.Identity;
-
-			Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4.0f, (float)Width / (float)Height, 1.0f, 10.0f, out projectionMatrix);
+			Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4.0f, (float)Width / (float)Height, 1.0f, 100.0f, out projectionMatrix);
 			Matrix4.CreateTranslation(ref CameraPosition, out viewMatrix);
 
 			Transform.Data = new DefaultTransformData()
@@ -133,6 +131,7 @@ namespace ZaphatDevProgram
 
 			System.Diagnostics.Debug.WriteLine("Create ViewProjection buffer");
 			ViewProjection = new DefaultViewProjectionBuffer();
+			ViewProjection.BindingPoint = 2;
 			program.BindUniformBlock("ViewProjectionBlock", ViewProjection);
 			/*ViewProjection.Data = new DefaultViewProjectionData()
 			{
@@ -144,7 +143,7 @@ namespace ZaphatDevProgram
 				CameraWorldDirection = new Vector4(CameraDirection, 0.0f)
 			};*/
 			//ViewProjection.UpdateData();
-			//ViewProjection.Update(viewMatrix, projectionMatrix, CameraPosition, CameraDirection);
+			ViewProjection.Update(viewMatrix, projectionMatrix, CameraPosition, CameraDirection);
 
 			Zaphat.Utilities.Logger.CheckGLError();
 		}
@@ -160,16 +159,16 @@ namespace ZaphatDevProgram
 
 			program.Use();
 
-			//CameraPosition = new Vector3(0f, 0f, 0f);
-			CameraPosition = new Vector3((float)Math.Sin(totalTime), (float)Math.Cos(totalTime), 0f);
+			CameraPosition = new Vector3(0f, 0f, 10f);
+			//CameraPosition = new Vector3((float)Math.Sin(totalTime), (float)Math.Cos(totalTime), 0f);
 
 			//Zaphat.Utilities.Logger.Log(string.Format("Camera position: {0}", CameraPosition));
 
-			//Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4.0f, ((float)Width) / ((float)Height), 1f, 100.0f, out projectionMatrix);
+			Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4.0f, ((float)Width) / ((float)Height), 1f, 100.0f, out projectionMatrix);
 			Matrix4.CreateTranslation(ref CameraPosition, out viewMatrix);
 
-			ViewProjection.Update(viewMatrix, projectionMatrix, CameraPosition, new Vector3(0, 0, 1f));
-			Transform.UpdatePositionRotationScale(new Vector4((float)Math.Sin(totalTime), 0f, 0f, 1f), Quaternion.FromEulerAngles(0.0f, (float)-totalTime, 0.0f), Vector4.One);
+			ViewProjection.Update(viewMatrix, projectionMatrix, CameraPosition, new Vector3(0, 0, -1f));
+			Transform.UpdatePositionRotationScale(new Vector4(0f, 0f, 0f, 1f), Quaternion.FromEulerAngles((float)totalTime, 0.0f, 0.0f), Vector4.One * 0.5f);
 
 			var lightPosition = new Vector3((float)Math.Sin(totalTime), (float)Math.Cos(totalTime), 0.0f).Normalized();
 			lightPosition *= (float)((Math.Sin(totalTime) + 1.0) * 0.5) + 0.25f;
