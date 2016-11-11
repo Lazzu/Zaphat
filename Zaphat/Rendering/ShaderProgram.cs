@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
+using Zaphat.Core;
 
 namespace Zaphat.Rendering
 {
@@ -104,7 +105,6 @@ namespace Zaphat.Rendering
 			{
 				index = GL.GetUniformBlockIndex(GLName, name);
 
-				Zaphat.Utilities.Logger.Log(string.Format("Found uniform block {0} from index {1}", name, index));
 				Zaphat.Utilities.Logger.CheckGLError(string.Format("GLName: {0}, name:{1}", GLName, name));
 
 				if (index < 0)
@@ -129,19 +129,14 @@ namespace Zaphat.Rendering
 			return location;
 		}
 
-        public void BindUniformBlock<T>(string name, Zaphat.Core.UniformBufferObject<T> buffer) where T : struct
-        {
-            var index = GetUniformBlockIndex(name);
-            if (index < 0)
-                return;
-            GL.BindBufferBase(BufferRangeTarget.UniformBuffer, index, buffer.BindingPointIndex);
-        }
-
-        public void BindUniformBlock<T>(string name, int bindingPointIndex, Zaphat.Core.UniformBufferObject<T> buffer) where T : struct
+		public void BindUniformBlock<T>(string name, UniformBufferObject<T> buffer) where T : struct
 		{
-            Use();
-            buffer.BindingPointIndex = bindingPointIndex;
-            BindUniformBlock(name, buffer);
+			var index = GetUniformBlockIndex(name);
+
+			if (index < 0)
+				return;
+
+			GL.UniformBlockBinding(GLName, index, buffer.BindingPoint);
 		}
 
 		public void SendUniform(string name, float value)

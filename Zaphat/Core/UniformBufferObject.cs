@@ -4,21 +4,18 @@ namespace Zaphat.Core
 {
 	public class UniformBufferObject<T> : Buffer<T> where T : struct
 	{
-        int _bindingPointIndex = -1;
-        public int BindingPointIndex
-        {
-            get
-            {
-                return _bindingPointIndex;
-            }
-            set
-            {
-                _bindingPointIndex = value;
-                Bind();
-                GL.BindBufferBase(BufferRangeTarget.UniformBuffer, _bindingPointIndex, Name);
-            }
-        }
+		int _bindingPoint;
 
-        public UniformBufferObject() : base(BufferTarget.UniformBuffer) { }
+		public int BindingPoint
+		{
+			get { return _bindingPoint; }
+			set
+			{
+				_bindingPoint = value;
+				GL.BindBufferBase(BufferRangeTarget.UniformBuffer, _bindingPoint, Name);
+			}
+		}
+
+		public UniformBufferObject() : base(BufferTarget.UniformBuffer) { }
 	}
 }

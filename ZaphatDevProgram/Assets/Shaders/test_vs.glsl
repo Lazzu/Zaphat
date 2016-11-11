@@ -39,7 +39,7 @@ vec3 Rotate( vec4 q, vec3 v )
 vec4 Transform(vec3 v)
 {
 	v = Rotate(obj_transform.objRotation, v);
-	//v *= obj_transform.objScale.xyz;
+	v *= obj_transform.objScale.xyz;
 	return vec4(v + obj_transform.objPosition.xyz, 1.0);
 }
 
@@ -51,19 +51,10 @@ vec3 RotateNormal(vec3 n)
 void main()
 {
 	tcoord = uv.xy;
-	fColor = vec4(1,1,1,1);
-	//fColor = vec4(min(vec3(1.0), max(vec3(0.0), abs(Projection[gl_VertexID].xyz))), 1.0);
-	//fColor = vec4(abs(CameraWorldPosition.xyz), 1.0);
-	fColor = vec4(abs(obj_transform.objPosition.xyz), 1.0);
-	//fColor = abs(vec4(data_viewProjection.View[0].x,0,0,1));
-	//fColor = abs(vec4(data_viewProjection.View[0].x, data_viewProjection.View[0].y, data_viewProjection.View[0].z, 1.0));
+	fColor = color;
 	fNormal = RotateNormal(normal);
-	//vec4 pos = Projection * View * Transform(vertex);
-	//vec4 pos = Transform(vertex);
-	vec4 pos = vec4(vertex * 0.5, 1.0);
-	float invW = 1.0 / pos.w;
-	fPosition = pos.xyz * invW;
-	//fPosition = View[0].xyz;
-	gl_Position = pos;
+	vec4 pos = Transform(vertex);
+	gl_Position = data_viewProjection.ViewProjection * pos;
+	fPosition = (data_viewProjection.View * pos).xyz;
 }
 
