@@ -4,6 +4,7 @@ precision highp float;
 in vec4 fColor;
 in vec3 fPosition;
 in vec3 fNormal;
+in vec2 tcoord;
 
 layout(location = 0) out vec4 RGBA;
 
@@ -24,5 +25,6 @@ void main( void )
 
 	vec3 light = vec3(remap(nDotL, 0.0, 1.0, MinLight, MaxLight));
 
-    RGBA = vec4(light * fColor.rgb, 1.0);
+    //RGBA = vec4(light * fColor.rgb, 1.0);
+	RGBA = vec4(tcoord.x, tcoord.y, 0.0, 1.0);
 }
