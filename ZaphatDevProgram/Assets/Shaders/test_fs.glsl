@@ -1,4 +1,5 @@
 ﻿#version 420
+
 precision highp float;
 
 in vec4 fColor;
@@ -13,6 +14,8 @@ const vec3 lightDirection = vec3(1,1,1);
 uniform float MinLight = 0.5;
 uniform float MaxLight = 0.95;
 
+uniform sampler2D DiffuseTexture;
+
 float remap(float value, float fromLow, float fromHigh, float toLow, float toHigh)
 {
 	return toLow + (value - fromLow) * (toHigh - toLow) / (fromHigh - fromLow);
@@ -25,6 +28,8 @@ void main( void )
 
 	vec3 light = vec3(remap(nDotL, 0.0, 1.0, MinLight, MaxLight));
 
-    //RGBA = vec4(light * fColor.rgb, 1.0);
-	RGBA = vec4(tcoord.x, tcoord.y, 0.0, 1.0);
+
+    //RGBA = vec4(light * fColor.rgb * texture(DiffuseTexture, tcoord.xy).rgb, 1.0);
+    RGBA = vec4(texture(DiffuseTexture, tcoord.xy).rgb, 1.0);
+	//RGBA = vec4(tcoord.x, tcoord.y, 0.0, 1.0);
 }

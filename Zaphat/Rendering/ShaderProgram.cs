@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
+using Zaphat.Assets.Textures;
 using Zaphat.Core;
 
 namespace Zaphat.Rendering
@@ -137,6 +138,14 @@ namespace Zaphat.Rendering
 				return;
 
 			GL.UniformBlockBinding(GLName, index, buffer.BindingPoint);
+		}
+
+		public void BindTextureUnit(Texture texture, string uniform, int unit)
+		{
+			texture.Use();
+			texture.SetTextureUnit(unit);
+			Use();
+			SendUniform(uniform, unit);
 		}
 
 		public void SendUniform(string name, float value)

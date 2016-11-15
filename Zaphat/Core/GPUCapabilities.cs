@@ -1,5 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using System.Collections.Generic;
+using System;
 
 namespace Zaphat.Core
 {
@@ -7,6 +8,7 @@ namespace Zaphat.Core
 	{
 		static bool polled = false;
 		static int maxAnisotrophy;
+		static int maxTextureUnits;
 
 		static HashSet<string> ext;
 
@@ -36,6 +38,15 @@ namespace Zaphat.Core
 			}
 		}
 
+		public static int MaxTextureUnits
+		{
+			get
+			{
+				PollCapabilities();
+				return maxTextureUnits;
+			}
+		}
+
 		/// <summary>
 		/// Return if the GPU supports the given extension
 		/// </summary>
@@ -57,15 +68,22 @@ namespace Zaphat.Core
 
 			polled = true;
 
+			ext = new HashSet<string>();
+
 			// Get the extensions
-			var extensions = GL.GetString(StringName.Extensions);
-			ext = new HashSet<string>(extensions.Split(' '));
+			int n = 0;
+			GL.GetInteger(GetPName.NumExtensions, out n);
+			for (int i = 0; i < n; i++)
+			{
+				ext.Add(GL.GetString(StringNameIndexed.Extensions, i));
+			}
 
 			// Get max anisotrophy level
 			// FIXME: OpenTK Bug https://github.com/opentk/opentk/issues/212
 			maxAnisotrophy = GL.GetInteger((GetPName)((int)0x84FF));
 
-
+			// Get max number of possible texture units
+			maxTextureUnits = GL.GetInteger(GetPName.MaxTextureUnits);
 		}
 
 	}

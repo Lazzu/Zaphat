@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using OpenTK.Graphics.OpenGL4;
 using Zaphat.Core;
 
@@ -72,6 +73,25 @@ namespace Zaphat.Assets.Textures
 		public void Release()
 		{
 			GL.DeleteTexture(GLName);
+		}
+
+		public void SetTextureUnit(int unit)
+		{
+			GL.BindTextureUnit(unit, GLName);
+			ActivateUnit(unit);
+		}
+
+		static HashSet<int> activatedUnits = new HashSet<int>();
+		public static void ActivateUnit(int unit)
+		{
+			if (unit < 0) throw new ArgumentException("Texture unit to activate can only be 0 or larger");
+			if (unit >= GPUCapabilities.MaxTextureUnits) throw new Exception(string.Format("The GPU does not support more than {0} texture units!", GPUCapabilities.MaxTextureUnits));
+
+			if (activatedUnits.Contains(unit))
+				return;
+
+			GL.ActiveTexture(TextureUnit.Texture0 + unit);
+			activatedUnits.Add(unit);
 		}
 	}
 }

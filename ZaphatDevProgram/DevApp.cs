@@ -5,6 +5,7 @@ using OpenTK.Graphics;
 using Zaphat.Application;
 using Zaphat.Core;
 using Zaphat.Rendering;
+using Zaphat.Assets.Textures;
 
 namespace ZaphatDevProgram
 {
@@ -22,15 +23,18 @@ namespace ZaphatDevProgram
 		ArrayBufferVector3 vertices;
 		ArrayBufferVector3 normals;
 		ArrayBufferVector4 colors;
-        ArrayBufferVector2 tcoords;
+		ArrayBufferVector2 tcoords;
 
-        DefaultTransformBuffer Transform;
+		DefaultTransformBuffer Transform;
 		DefaultViewProjectionBuffer ViewProjection;
 
 		Matrix4 projectionMatrix = Matrix4.Identity;
 		Matrix4 viewMatrix = Matrix4.Identity;
 		Vector3 CameraPosition;
 		Vector3 CameraDirection = new Vector3(0, 0, 1f);
+
+		TextureManager textureManager;
+		Texture diffuseTexture;
 
 		public DevApp(int width, int height, GraphicsMode mode) : base(width, height, mode)
 		{
@@ -102,25 +106,25 @@ namespace ZaphatDevProgram
 			normals.Upload(normalData);
 			normals.BindVertexAttrib(3);
 
-            tcoords = new ArrayBufferVector2();
+			tcoords = new ArrayBufferVector2();
 
-            var tcoordData = new Vector2[] {
-                new Vector2(0.0f, 0.0f),
-                new Vector2(1.0f, 0.0f),
-                new Vector2(0.0f, 1.0f),
-                new Vector2(1.0f, 1.0f),
+			var tcoordData = new Vector2[] {
+				new Vector2(0.0f, 0.0f),
+				new Vector2(1.0f, 0.0f),
+				new Vector2(0.0f, 1.0f),
+				new Vector2(1.0f, 1.0f),
 
-                new Vector2(1.0f, 1.0f),
-                new Vector2(0.0f, 1.0f),
-                new Vector2(1.0f, 0.0f),
-                new Vector2(0.0f, 0.0f),
-            };
+				new Vector2(1.0f, 1.0f),
+				new Vector2(0.0f, 1.0f),
+				new Vector2(1.0f, 0.0f),
+				new Vector2(0.0f, 0.0f),
+			};
 
-            tcoords.Bind();
-            tcoords.Upload(tcoordData);
-            tcoords.BindVertexAttrib(2);
+			tcoords.Bind();
+			tcoords.Upload(tcoordData);
+			tcoords.BindVertexAttrib(2);
 
-            colors = new ArrayBufferVector4();
+			colors = new ArrayBufferVector4();
 
 			var colorData = new Vector4[] {
 				new Vector4(0.0f, 0.0f, 0.0f, 1.0f),
@@ -138,9 +142,9 @@ namespace ZaphatDevProgram
 			colors.Upload(colorData);
 			colors.BindVertexAttrib(1);
 
-            
 
-            vao.UnBind();
+
+			vao.UnBind();
 
 			program = new ShaderProgram("Some shader");
 			vertex = new Shader(ShaderType.VertexShader);
@@ -177,6 +181,12 @@ namespace ZaphatDevProgram
 			ViewProjection.Update(viewMatrix, projectionMatrix, CameraPosition, CameraDirection);
 
 			Zaphat.Utilities.Logger.CheckGLError();
+
+			textureManager = new TextureManager();
+
+			diffuseTexture = textureManager.Load("Assets/Textures/pattern_125_diffuse.png");
+
+			program.BindTextureUnit(diffuseTexture, "DiffuseTexture", 0);
 		}
 
 		double totalTime = 0.0;
