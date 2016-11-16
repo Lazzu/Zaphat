@@ -50,9 +50,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\ShaderProgram.cs" />
     <Compile Include="Rendering\Shader.cs" />
-    <Compile Include="Sprites\Sprite.cs" />
-    <Compile Include="Sprites\SpriteRenderer.cs" />
-    <Compile Include="Sprites\SpriteAtlas.cs" />
     <Compile Include="Core\GPUResource.cs" />
     <Compile Include="Core\GPUResourceManager.cs" />
     <Compile Include="Core\GPUResourceManagers.cs" />
@@ -67,8 +64,6 @@
     <Compile Include="Core\GPUCapabilities.cs" />
     <Compile Include="Assets\Textures\TextureFilterMode.cs" />
     <Compile Include="Assets\Textures\WrapMode.cs" />
-    <Compile Include="Sprites\SpriteType.cs" />
-    <Compile Include="Sprites\SpriteVertex.cs" />
     <Compile Include="Assets\Textures\TextureArray.cs" />
     <Compile Include="Utilities\ImageTools.cs" />
     <Compile Include="Assets\Materials\MaterialManager.cs" />
@@ -85,8 +80,14 @@
     <Compile Include="Core\DefaultTransformBuffer.cs" />
     <Compile Include="Assets\IAssetManager.cs" />
     <Compile Include="Assets\Meshes\DefaultMeshData.cs" />
+    <Compile Include="Sprites\SpriteRenderer.cs" />
+    <Compile Include="Sprites\Sprite.cs" />
+    <Compile Include="Sprites\SpriteBatch.cs" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Sprites\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
