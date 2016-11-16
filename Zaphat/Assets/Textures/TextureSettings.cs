@@ -37,19 +37,19 @@ namespace Zaphat.Assets.Textures
 			WrapMode = WrapMode.Repeat;
 			FilterMode = TextureFilterMode.Trilinear;
 			Format = PixelInternalFormat.Rgb;
+			MipMapLevel = 0;
 		}
 
 		public void Apply(TextureTarget target)
 		{
-			AnisotrophyLevel = Math.Min(AnisotrophyLevel, GPUCapabilities.MaxAnisotrophy);
 			var minFilter = MipMapLevel > 0 ? FilterMode.MinMip : FilterMode.Min;
-
 			GL.TexParameter(target, TextureParameterName.TextureMinFilter, (int)minFilter);
 			GL.TexParameter(target, TextureParameterName.TextureMagFilter, (int)FilterMode.Mag);
 			GL.TexParameter(target, TextureParameterName.TextureWrapS, (int)WrapMode.S);
 			GL.TexParameter(target, TextureParameterName.TextureWrapT, (int)WrapMode.T);
 			GL.TexParameter(target, TextureParameterName.TextureWrapR, (int)WrapMode.R);
 
+			AnisotrophyLevel = Math.Min(AnisotrophyLevel, GPUCapabilities.MaxAnisotrophy);
 			// TODO: OpenTK Bug: https://github.com/opentk/opentk/issues/212
 			//GL.TexParameter(target, (TextureParameterName)(0x84FE), (int)AnisotrophyLevel);
 

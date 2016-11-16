@@ -142,8 +142,8 @@ namespace Zaphat.Rendering
 
 		public void BindTextureUnit(Texture texture, string uniform, int unit)
 		{
-			texture.Use();
 			texture.SetTextureUnit(unit);
+			texture.Use();
 			Use();
 			SendUniform(uniform, unit);
 		}

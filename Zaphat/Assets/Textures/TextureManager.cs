@@ -31,11 +31,11 @@ namespace Zaphat.Assets.Textures
 				{
 					case System.Drawing.Imaging.PixelFormat.Format24bppRgb:
 						format = PixelInternalFormat.Rgb;
-						bmpFormat = PixelFormat.Rgb;
+						bmpFormat = PixelFormat.Bgr;
 						break;
 					case System.Drawing.Imaging.PixelFormat.Format32bppArgb:
-						format = PixelInternalFormat.Rgb;
-						bmpFormat = PixelFormat.Rgb;
+						format = PixelInternalFormat.Rgba;
+						bmpFormat = PixelFormat.Bgra;
 						break;
 					default:
 						throw new NotSupportedException("Only RGB and RGBA image formats are supported for now!");
@@ -48,9 +48,9 @@ namespace Zaphat.Assets.Textures
 
 				tex.Use();
 
-				var bits = bmp.LockBits(new Rectangle(new Point(0, 0), new Size(bmp.Width, bmp.Height)), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+				var bits = bmp.LockBits(new Rectangle(new Point(0, 0), new Size(bmp.Width, bmp.Height)), System.Drawing.Imaging.ImageLockMode.ReadOnly, bmp.PixelFormat);
 
-				GL.TexImage2D(TextureTarget.Texture2D, 0, format, bmp.Width, bmp.Height, 0, bmpFormat, PixelType.Byte, bits.Scan0);
+				GL.TexImage2D(TextureTarget.Texture2D, 0, format, bmp.Width, bmp.Height, 0, bmpFormat, PixelType.UnsignedByte, bits.Scan0);
 
 				bmp.UnlockBits(bits);
 

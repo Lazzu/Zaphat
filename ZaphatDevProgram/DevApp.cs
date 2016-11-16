@@ -35,6 +35,8 @@ namespace ZaphatDevProgram
 
 		TextureManager textureManager;
 		Texture diffuseTexture;
+		Texture normalTexture;
+		Texture specularTexture;
 
 		public DevApp(int width, int height, GraphicsMode mode) : base(width, height, mode)
 		{
@@ -55,14 +57,11 @@ namespace ZaphatDevProgram
 
 			indices = new ElementArrayBuffer<int>();
 
-			var indexData = new int[] {
-				2, 1, 0, 2, 3, 1, // Bottom
-				4, 5, 6, 6, 5, 7, // Top
-				2, 0, 4, 2, 4, 6, // Left
-				1, 3, 5, 3, 7, 5, // Right
-				0, 1, 4, 4, 1, 5, // Front
-				3, 2, 6, 3, 6, 7, // Back
-			};
+			var indexData = new int[36];
+			for (int i = 0; i < indexData.Length; i++)
+			{
+				indexData[i] = i;
+			}
 
 			indices.Bind();
 			indices.Upload(indexData);
@@ -70,13 +69,40 @@ namespace ZaphatDevProgram
 			vertices = new ArrayBufferVector3();
 
 			var vertexData = new Vector3[] {
-				new Vector3(-1.0f, -1.0f, -1.0f),
+				new Vector3(-1.0f, -1.0f, 1.0f),
 				new Vector3(1.0f, -1.0f, -1.0f),
+				new Vector3(-1.0f, -1.0f, -1.0f),
 				new Vector3(-1.0f, -1.0f, 1.0f),
 				new Vector3(1.0f, -1.0f, 1.0f),
-
+				new Vector3(1.0f, -1.0f, -1.0f),
 				new Vector3(-1.0f, 1.0f, -1.0f),
 				new Vector3(1.0f, 1.0f, -1.0f),
+				new Vector3(-1.0f, 1.0f, 1.0f),
+				new Vector3(-1.0f, 1.0f, 1.0f),
+				new Vector3(1.0f, 1.0f, -1.0f),
+				new Vector3(1.0f, 1.0f, 1.0f),
+				new Vector3(-1.0f, -1.0f, 1.0f),
+				new Vector3(-1.0f, -1.0f, -1.0f),
+				new Vector3(-1.0f, 1.0f, -1.0f),
+				new Vector3(-1.0f, -1.0f, 1.0f),
+				new Vector3(-1.0f, 1.0f, -1.0f),
+				new Vector3(-1.0f, 1.0f, 1.0f),
+				new Vector3(1.0f, -1.0f, -1.0f),
+				new Vector3(1.0f, -1.0f, 1.0f),
+				new Vector3(1.0f, 1.0f, -1.0f),
+				new Vector3(1.0f, -1.0f, 1.0f),
+				new Vector3(1.0f, 1.0f, 1.0f),
+				new Vector3(1.0f, 1.0f, -1.0f),
+				new Vector3(-1.0f, -1.0f, -1.0f),
+				new Vector3(1.0f, -1.0f, -1.0f),
+				new Vector3(-1.0f, 1.0f, -1.0f),
+				new Vector3(-1.0f, 1.0f, -1.0f),
+				new Vector3(1.0f, -1.0f, -1.0f),
+				new Vector3(1.0f, 1.0f, -1.0f),
+				new Vector3(1.0f, -1.0f, 1.0f),
+				new Vector3(-1.0f, -1.0f, 1.0f),
+				new Vector3(-1.0f, 1.0f, 1.0f),
+				new Vector3(1.0f, -1.0f, 1.0f),
 				new Vector3(-1.0f, 1.0f, 1.0f),
 				new Vector3(1.0f, 1.0f, 1.0f),
 			};
@@ -89,18 +115,11 @@ namespace ZaphatDevProgram
 
 			var normal = new Vector3(1, 1, 1).Normalized();
 
-			var normalData = new Vector3[] {
-				new Vector3(-1.0f, -1.0f, -1.0f) * normal,
-				new Vector3(1.0f, -1.0f, -1.0f) * normal,
-				new Vector3(-1.0f, -1.0f, 1.0f) * normal,
-				new Vector3(1.0f, -1.0f, 1.0f) * normal,
-
-				new Vector3(-1.0f, 1.0f, -1.0f) * normal,
-				new Vector3(1.0f, 1.0f, -1.0f) * normal,
-				new Vector3(-1.0f, 1.0f, 1.0f) * normal,
-				new Vector3(1.0f, 1.0f, 1.0f) * normal,
-
-			};
+			var normalData = new Vector3[vertexData.Length];
+			for (int i = 0; i < normalData.Length; i++)
+			{
+				normalData[i] = vertexData[i] * normal;
+			}
 
 			normals.Bind();
 			normals.Upload(normalData);
@@ -108,17 +127,17 @@ namespace ZaphatDevProgram
 
 			tcoords = new ArrayBufferVector2();
 
-			var tcoordData = new Vector2[] {
-				new Vector2(0.0f, 0.0f),
-				new Vector2(1.0f, 0.0f),
-				new Vector2(0.0f, 1.0f),
-				new Vector2(1.0f, 1.0f),
+			var tcoordData = new Vector2[vertexData.Length];
+			for (int i = 0; i < 6; i++)
+			{
+				tcoordData[i * 6 + 0] = new Vector2(0, 1);
+				tcoordData[i * 6 + 1] = new Vector2(1, 0);
+				tcoordData[i * 6 + 2] = new Vector2(0, 0);
 
-				new Vector2(1.0f, 1.0f),
-				new Vector2(0.0f, 1.0f),
-				new Vector2(1.0f, 0.0f),
-				new Vector2(0.0f, 0.0f),
-			};
+				tcoordData[i * 6 + 3] = new Vector2(0, 1);
+				tcoordData[i * 6 + 4] = new Vector2(1, 1);
+				tcoordData[i * 6 + 5] = new Vector2(1, 0);
+			}
 
 			tcoords.Bind();
 			tcoords.Upload(tcoordData);
@@ -126,17 +145,11 @@ namespace ZaphatDevProgram
 
 			colors = new ArrayBufferVector4();
 
-			var colorData = new Vector4[] {
-				new Vector4(0.0f, 0.0f, 0.0f, 1.0f),
-				new Vector4(1.0f, 0.0f, 0.0f, 1.0f),
-				new Vector4(0.0f, 0.0f, 1.0f, 1.0f),
-				new Vector4(1.0f, 0.0f, 1.0f, 1.0f),
-
-				new Vector4(0.0f, 1.0f, 0.0f, 1.0f),
-				new Vector4(1.0f, 1.0f, 0.0f, 1.0f),
-				new Vector4(0.0f, 1.0f, 1.0f, 1.0f),
-				new Vector4(1.0f, 1.0f, 1.0f, 1.0f),
-			};
+			var colorData = new Vector4[vertexData.Length];
+			for (int i = 0; i < colorData.Length; i++)
+			{
+				colorData[i] = Vector4.One;
+			}
 
 			colors.Bind();
 			colors.Upload(colorData);
@@ -184,9 +197,13 @@ namespace ZaphatDevProgram
 
 			textureManager = new TextureManager();
 
-			diffuseTexture = textureManager.Load("Assets/Textures/pattern_125_diffuse.png");
+			diffuseTexture = textureManager.Load("Assets/Textures/pattern_133_diffuse.png");
+			normalTexture = textureManager.Load("Assets/Textures/pattern_133_normal.png");
+			specularTexture = textureManager.Load("Assets/Textures/pattern_133_specular.png");
 
 			program.BindTextureUnit(diffuseTexture, "DiffuseTexture", 0);
+			program.BindTextureUnit(normalTexture, "NormalTexture", 1);
+			program.BindTextureUnit(specularTexture, "SpecularTexture", 2);
 		}
 
 		double totalTime = 0.0;
@@ -201,7 +218,7 @@ namespace ZaphatDevProgram
 
 			program.Use();
 
-			CameraPosition = new Vector3((float)Math.Sin(totalTime) * 50 + (float)Math.Sin(totalTime * 0.53) * 10, (float)Math.Sin(totalTime * 0.912345) * 25, (float)Math.Cos(totalTime) * 50 + (float)Math.Cos(totalTime * 0.5357) * 10);
+			CameraPosition = new Vector3((float)Math.Sin(totalTime * 0.25) * 50 + (float)Math.Sin(totalTime * 0.53 * 0.25) * 10, (float)Math.Sin(totalTime * 0.912345 * 0.25) * 25, (float)Math.Cos(totalTime * 0.25) * 50 + (float)Math.Cos(totalTime * 0.5357 * 0.25) * 10);
 
 			Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4.0f, ((float)Width) / ((float)Height), 15f, 75.0f, out projectionMatrix);
 			viewMatrix = Matrix4.LookAt(CameraPosition, Vector3.Zero, Vector3.UnitY);
@@ -210,6 +227,9 @@ namespace ZaphatDevProgram
 			ViewProjection.Update(viewMatrix, projectionMatrix, CameraPosition, new Vector3(cameraDir.X, cameraDir.Y, cameraDir.Z));
 			//var rot = Quaternion.FromEulerAngles(0.0f, (float)totalTime, 0.0f);
 			Transform.UpdatePositionRotationScale(new Vector4(0f, 0f, 0f, 1f), Quaternion.Identity, Vector4.One * 10f);
+
+			var lightposition = new Vector3((float)Math.Sin(totalTime), 1.0f, (float)Math.Cos(totalTime));
+			program.SendUniform("LightPosition", lightposition);
 
 			vao.Bind();
 			GL.DrawElements(PrimitiveType.Triangles, 36, DrawElementsType.UnsignedInt, IntPtr.Zero);
