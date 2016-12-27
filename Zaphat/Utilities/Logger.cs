@@ -26,7 +26,7 @@ namespace Zaphat.Utilities
 				var current = DateTime.Now;
 				if (current != prevTime)
 				{
-					prevTimeString = current.ToShortTimeString();
+					prevTimeString = string.Format("{0}.{1,4:D4}", current.ToLongTimeString(), current.Millisecond);
 					prevTime = current;
 				}
 				return prevTimeString;
@@ -72,13 +72,11 @@ namespace Zaphat.Utilities
 			}
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void Log(string text)
 		{
 			Console.WriteLine("[{0}][Log] {1}", CurrentTime, text);
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void VerboseLog(string text)
 		{
 			if (!Verbose)
@@ -87,40 +85,40 @@ namespace Zaphat.Utilities
 			Console.WriteLine("[{0}][Log] {1}", CurrentTime, text);
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void Warning(string text)
 		{
+			Console.ForegroundColor = ConsoleColor.Yellow;
 			Console.WriteLine("[{0}][Warning] {1}", CurrentTime, text);
+			Console.ResetColor();
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void Error(string text)
 		{
+			Console.ForegroundColor = ConsoleColor.Red;
 			Console.WriteLine("[{0}][Error] {1}", CurrentTime, text);
+			Console.ResetColor();
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void Exception(Exception e)
 		{
+			Console.ForegroundColor = ConsoleColor.Magenta;
 			Console.WriteLine("[{0}][Exception] {1}", CurrentTime, e);
+			Console.ResetColor();
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void Custom(string text, string tag)
 		{
+			Console.ForegroundColor = ConsoleColor.Green;
 			Console.WriteLine("[{0}][{2}] {1}", CurrentTime, text, tag);
+			Console.ResetColor();
 		}
 
-		//[Conditional("DEBUG")]
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void Debug(string text, int traceSkipOffset = 0)
 		{
 			var trace = new StackTrace(1 + traceSkipOffset, true);
 			System.Diagnostics.Debug.WriteLine("[{0}][Debug] {1}\nStack Trace:\n{2}\n\n", CurrentTime, text, trace.ToString());
 		}
 
-		//[Conditional("DEBUG")]
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void VerboseDebug(string text)
 		{
 			if (!Verbose)

@@ -52,8 +52,6 @@ namespace Zaphat.Core
 
 			var d = new float[]
 			{
-				//cameraWorldPos.X, cameraWorldPos.Y, cameraWorldPos.Z, 1.0f,
-
 				view.M11, view.M12, view.M13, view.M14,
 				view.M21, view.M22, view.M23, view.M24,
 				view.M31, view.M32, view.M33, view.M34,

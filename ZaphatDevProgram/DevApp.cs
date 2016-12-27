@@ -6,6 +6,8 @@ using Zaphat.Application;
 using Zaphat.Core;
 using Zaphat.Rendering;
 using Zaphat.Assets.Textures;
+using Zaphat.Utilities;
+using Zaphat.Text;
 
 namespace ZaphatDevProgram
 {
@@ -38,13 +40,17 @@ namespace ZaphatDevProgram
 		Texture normalTexture;
 		Texture specularTexture;
 
+		TextMesh text;
+
 		public DevApp(int width, int height, GraphicsMode mode) : base(width, height, mode)
 		{
+			Console.WriteLine("Foobar!");
 			VSync = VSyncMode.On;
 		}
 
 		protected override void OnLoad(EventArgs e)
 		{
+			Logger.Log("Start loading mandatory assets.");
 			//vao = new VertexArrayObject();
 
 			//GL.ClearColor((float)r.NextDouble(), (float)r.NextDouble(), (float)r.NextDouble(), 1.0f);
@@ -75,30 +81,35 @@ namespace ZaphatDevProgram
 				new Vector3(-1.0f, -1.0f, 1.0f),
 				new Vector3(1.0f, -1.0f, 1.0f),
 				new Vector3(1.0f, -1.0f, -1.0f),
+
 				new Vector3(-1.0f, 1.0f, -1.0f),
 				new Vector3(1.0f, 1.0f, -1.0f),
 				new Vector3(-1.0f, 1.0f, 1.0f),
 				new Vector3(-1.0f, 1.0f, 1.0f),
 				new Vector3(1.0f, 1.0f, -1.0f),
 				new Vector3(1.0f, 1.0f, 1.0f),
+
 				new Vector3(-1.0f, -1.0f, 1.0f),
 				new Vector3(-1.0f, -1.0f, -1.0f),
 				new Vector3(-1.0f, 1.0f, -1.0f),
 				new Vector3(-1.0f, -1.0f, 1.0f),
 				new Vector3(-1.0f, 1.0f, -1.0f),
 				new Vector3(-1.0f, 1.0f, 1.0f),
+
 				new Vector3(1.0f, -1.0f, -1.0f),
 				new Vector3(1.0f, -1.0f, 1.0f),
 				new Vector3(1.0f, 1.0f, -1.0f),
 				new Vector3(1.0f, -1.0f, 1.0f),
 				new Vector3(1.0f, 1.0f, 1.0f),
 				new Vector3(1.0f, 1.0f, -1.0f),
+
 				new Vector3(-1.0f, -1.0f, -1.0f),
 				new Vector3(1.0f, -1.0f, -1.0f),
 				new Vector3(-1.0f, 1.0f, -1.0f),
 				new Vector3(-1.0f, 1.0f, -1.0f),
 				new Vector3(1.0f, -1.0f, -1.0f),
 				new Vector3(1.0f, 1.0f, -1.0f),
+
 				new Vector3(1.0f, -1.0f, 1.0f),
 				new Vector3(-1.0f, -1.0f, 1.0f),
 				new Vector3(-1.0f, 1.0f, 1.0f),
@@ -127,8 +138,51 @@ namespace ZaphatDevProgram
 
 			tcoords = new ArrayBufferVector2();
 
-			var tcoordData = new Vector2[vertexData.Length];
-			for (int i = 0; i < 6; i++)
+			var tcoordData = new Vector2[]
+			{
+				new Vector2(0f, 1.0f),
+				new Vector2(1.0f, 0f),
+				new Vector2(0f, 0.0f),
+				new Vector2(0f, 1.0f),
+				new Vector2(1.0f, 1.0f),
+				new Vector2(1.0f, 0.0f),
+
+				new Vector2(0.0f, 0.0f),
+				new Vector2(1.0f, 0.0f),
+				new Vector2(0.0f, 1.0f),
+				new Vector2(0.0f, 1.0f),
+				new Vector2(1.0f, 0.0f),
+				new Vector2(1.0f, 1.0f),
+
+				new Vector2(0.0f, 1.0f),
+				new Vector2(0.0f, 0.0f),
+				new Vector2(1.0f, 0.0f),
+				new Vector2(0.0f, 1.0f),
+				new Vector2(1.0f, 0.0f),
+				new Vector2(1.0f, 1.0f),
+
+				new Vector2(0.0f, 0.0f),
+				new Vector2(0.0f, 1.0f),
+				new Vector2(1.0f, 0.0f),
+				new Vector2(0.0f, 1.0f),
+				new Vector2(1.0f, 1.0f),
+				new Vector2(1.0f, 0.0f),
+
+				new Vector2(0.0f, 0.0f),
+				new Vector2(1.0f, 0.0f),
+				new Vector2(0.0f, 1.0f),
+				new Vector2(0.0f, 1.0f),
+				new Vector2(1.0f, 0.0f),
+				new Vector2(1.0f, 1.0f),
+
+				new Vector2(1.0f, 0.0f),
+				new Vector2(0.0f, 0.0f),
+				new Vector2(0.0f, 1.0f),
+				new Vector2(1.0f, 0.0f),
+				new Vector2(0.0f, 1.0f),
+				new Vector2(1.0f, 1.0f),
+			};
+			/*for (int i = 0; i < 6; i++)
 			{
 				tcoordData[i * 6 + 0] = new Vector2(0, 1);
 				tcoordData[i * 6 + 1] = new Vector2(1, 0);
@@ -137,7 +191,7 @@ namespace ZaphatDevProgram
 				tcoordData[i * 6 + 3] = new Vector2(0, 1);
 				tcoordData[i * 6 + 4] = new Vector2(1, 1);
 				tcoordData[i * 6 + 5] = new Vector2(1, 0);
-			}
+			}*/
 
 			tcoords.Bind();
 			tcoords.Upload(tcoordData);
@@ -193,17 +247,59 @@ namespace ZaphatDevProgram
 			program.BindUniformBlock("ViewProjectionBlock", ViewProjection);
 			ViewProjection.Update(viewMatrix, projectionMatrix, CameraPosition, CameraDirection);
 
-			Zaphat.Utilities.Logger.CheckGLError();
+			Logger.CheckGLError();
 
-			textureManager = new TextureManager();
+			textureManager = TextureManager.Global;
 
-			diffuseTexture = textureManager.Load("Assets/Textures/pattern_133_diffuse.png");
+			diffuseTexture = textureManager.Load("Assets/Fonts/font.png");
 			normalTexture = textureManager.Load("Assets/Textures/pattern_133_normal.png");
 			specularTexture = textureManager.Load("Assets/Textures/pattern_133_specular.png");
+
+			diffuseTexture.Settings.AnisotrophyLevel = 16;
+			diffuseTexture.ApplySettings();
 
 			program.BindTextureUnit(diffuseTexture, "DiffuseTexture", 0);
 			program.BindTextureUnit(normalTexture, "NormalTexture", 1);
 			program.BindTextureUnit(specularTexture, "SpecularTexture", 2);
+
+			var font = Font.Load("Assets/Fonts/font.fnt");
+
+			var textProgram = new ShaderProgram("SDF");
+			var textVertex = new Shader(ShaderType.VertexShader);
+			var textFragment = new Shader(ShaderType.FragmentShader);
+
+			textVertex.ShaderSourceFile("Assets/Fonts/sdf_vs.glsl");
+			textFragment.ShaderSourceFile("Assets/Fonts/sdf_fs.glsl");
+
+			textProgram.AttachShader(textVertex);
+			textProgram.AttachShader(textFragment);
+
+			textProgram.Link();
+
+			text = new TextMesh();
+			text.ShaderProgram = textProgram;
+			text.Font = font;
+			//text.Text = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007f€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ";
+			text.Text = "Testaan toimiiko tää teksti";
+
+			Logger.Log("Loaded mandatory assets, now able to start running!");
+		}
+
+		protected override void OnKeyUp(OpenTK.Input.KeyboardKeyEventArgs e)
+		{
+			base.OnKeyUp(e);
+			if (e.Key == OpenTK.Input.Key.A)
+			{
+				if (diffuseTexture.Settings.AnisotrophyLevel > 1)
+				{
+					diffuseTexture.Settings.AnisotrophyLevel = 0;
+				}
+				else
+				{
+					diffuseTexture.Settings.AnisotrophyLevel = 16;
+				}
+				diffuseTexture.ApplySettings();
+			}
 		}
 
 		double totalTime = 0.0;
@@ -216,7 +312,13 @@ namespace ZaphatDevProgram
 			GL.Enable(EnableCap.DepthTest);
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
+
+
 			program.Use();
+
+			program.BindTextureUnit(diffuseTexture, "DiffuseTexture", 0);
+			program.BindTextureUnit(normalTexture, "NormalTexture", 1);
+			program.BindTextureUnit(diffuseTexture, "SpecularTexture", 2);
 
 			CameraPosition = new Vector3((float)Math.Sin(totalTime * 0.25) * 50 + (float)Math.Sin(totalTime * 0.53 * 0.25) * 10, (float)Math.Sin(totalTime * 0.912345 * 0.25) * 25, (float)Math.Cos(totalTime * 0.25) * 50 + (float)Math.Cos(totalTime * 0.5357 * 0.25) * 10);
 
@@ -233,6 +335,12 @@ namespace ZaphatDevProgram
 
 			vao.Bind();
 			GL.DrawElements(PrimitiveType.Triangles, 36, DrawElementsType.UnsignedInt, IntPtr.Zero);
+
+			GL.Disable(EnableCap.DepthTest);
+			GL.Enable(EnableCap.Blend);
+			GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+
+			text.Draw();
 
 			SwapBuffers();
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using OpenTK.Graphics.OpenGL4;
 using Zaphat.Core;
 
-namespace Zaphat.Assets.Textures
+namespace Zaphat.Core
 {
 	public class Texture : GPUResource
 	{

@@ -5,7 +5,7 @@ using OpenTK.Graphics;
 namespace Zaphat.Application
 {
 	/// <summary>
-	/// Base implementation of the game window. It isn't required to use this 
+	/// Base implementation of the game window. It isn't required to use this
 	/// and you can roll your own, but you have to take care of resource loading and set up.
 	/// </summary>
 	public class ZapApp : GameWindow

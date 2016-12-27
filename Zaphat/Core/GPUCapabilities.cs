@@ -7,7 +7,7 @@ namespace Zaphat.Core
 	public static class GPUCapabilities
 	{
 		static bool polled = false;
-		static int maxAnisotrophy;
+		static float maxAnisotrophy;
 		static int maxTextureUnits;
 
 		static HashSet<string> ext;
@@ -16,7 +16,7 @@ namespace Zaphat.Core
 		/// What is the maximum anisotropic filtering level supported by the GPU?
 		/// </summary>
 		/// <value>The max anisotrophy.</value>
-		public static int MaxAnisotrophy
+		public static float MaxAnisotrophy
 		{
 			get
 			{
@@ -78,12 +78,20 @@ namespace Zaphat.Core
 				ext.Add(GL.GetString(StringNameIndexed.Extensions, i));
 			}
 
-			// Get max anisotrophy level
-			// FIXME: OpenTK Bug https://github.com/opentk/opentk/issues/212
-			maxAnisotrophy = GL.GetInteger((GetPName)((int)0x84FF));
+			if (HasExtension("GL_EXT_texture_filter_anisotropic"))
+			{
+				// Get max anisotrophy level
+				// FIXME: OpenTK Bug https://github.com/opentk/opentk/issues/212
+				maxAnisotrophy = GL.GetFloat((GetPName)(0x84FF));
+			}
+			else
+			{
+				maxAnisotrophy = 0;
+			}
 
 			// Get max number of possible texture units
 			maxTextureUnits = GL.GetInteger(GetPName.MaxTextureUnits);
+
 		}
 
 	}

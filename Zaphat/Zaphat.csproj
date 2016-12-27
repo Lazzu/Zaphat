@@ -56,14 +56,10 @@
     <Compile Include="Core\TextureNameManager.cs" />
     <Compile Include="Utilities\Logger.cs" />
     <Compile Include="Utilities\Time.cs" />
-    <Compile Include="Assets\Textures\Texture.cs" />
     <Compile Include="Assets\Textures\TextureManager.cs" />
-    <Compile Include="Assets\Textures\TextureSettings.cs" />
     <Compile Include="Assets\Meshes\Mesh.cs" />
     <Compile Include="Assets\Meshes\MeshManager.cs" />
     <Compile Include="Core\GPUCapabilities.cs" />
-    <Compile Include="Assets\Textures\TextureFilterMode.cs" />
-    <Compile Include="Assets\Textures\WrapMode.cs" />
     <Compile Include="Assets\Textures\TextureArray.cs" />
     <Compile Include="Utilities\ImageTools.cs" />
     <Compile Include="Assets\Materials\MaterialManager.cs" />
@@ -80,16 +76,24 @@
     <Compile Include="Core\DefaultTransformBuffer.cs" />
     <Compile Include="Assets\IAssetManager.cs" />
     <Compile Include="Assets\Meshes\DefaultMeshData.cs" />
-    <Compile Include="Sprites\SpriteRenderer.cs" />
+    <Compile Include="Core\VertexAttribute.cs" />
     <Compile Include="Sprites\Sprite.cs" />
-    <Compile Include="Sprites\SpriteBatch.cs" />
+    <Compile Include="Core\TextureWrappingMode.cs" />
+    <Compile Include="Core\TextureSettings.cs" />
+    <Compile Include="Core\Texture.cs" />
+    <Compile Include="Core\TextureFilterMode.cs" />
+    <Compile Include="Assets\Textures\Texture2D.cs" />
+    <Compile Include="Utilities\SDFBitmapGenerator.cs" />
+    <Compile Include="Text\Glyph.cs" />
+    <Compile Include="Text\Kerning.cs" />
+    <Compile Include="Text\Font.cs" />
+    <Compile Include="Text\TextMesh.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Sprites\" />
+    <Folder Include="Text\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

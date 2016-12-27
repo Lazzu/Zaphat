@@ -1,7 +1,7 @@
 ﻿using System;
 using OpenTK.Graphics.OpenGL4;
 
-namespace Zaphat.Assets.Textures
+namespace Zaphat.Core
 {
 	public class TextureFilterMode
 	{

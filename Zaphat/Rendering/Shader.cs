@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Collections.Generic;
 using OpenTK.Graphics.OpenGL4;
+using Zaphat.Utilities;
 
 namespace Zaphat.Rendering
 {
@@ -72,6 +73,8 @@ namespace Zaphat.Rendering
 			var source = string.Join("\n", lines);
 
 			ShaderSource(source);
+
+			Logger.Log(string.Format("Loaded shader {0}", path));
 		}
 	}
 }

@@ -4,6 +4,7 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 using Zaphat.Assets.Textures;
 using Zaphat.Core;
+using Zaphat.Utilities;
 
 namespace Zaphat.Rendering
 {
@@ -50,6 +51,13 @@ namespace Zaphat.Rendering
 		public void Link()
 		{
 			GL.LinkProgram(GLName);
+			/*var info = GL.GetProgramInfoLog(GLName);
+
+			if (!string.IsNullOrEmpty(info))
+				Logger.Debug(info);*/
+
+			Logger.CheckGLError(string.Format("Linking program {0}", Name));
+			Logger.Log(string.Format("Linked program {0}", Name));
 		}
 
 		public void Use()
@@ -236,6 +244,7 @@ namespace Zaphat.Rendering
 			{
 				location = GL.GetAttribLocation(GLName, attribName);
 				attrLocations.Add(attribName, location);
+				Logger.CheckGLError("Attrib location");
 			}
 			return location;
 		}

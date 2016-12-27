@@ -1,4 +1,6 @@
 ﻿using System;
+using Zaphat.Core;
+
 namespace Zaphat.Assets.Textures
 {
 	public class TextureArray : Texture

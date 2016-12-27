@@ -1,9 +1,9 @@
 ﻿using System;
 using OpenTK.Graphics.OpenGL4;
 
-namespace Zaphat.Assets.Textures
+namespace Zaphat.Core
 {
-	public class WrapMode
+	public class TextureWrappingMode
 	{
 		public TextureWrapMode S
 		{
@@ -23,21 +23,21 @@ namespace Zaphat.Assets.Textures
 			protected set;
 		}
 
-		public static WrapMode Clamp = new WrapMode()
+		public static TextureWrappingMode Clamp = new TextureWrappingMode()
 		{
 			S = TextureWrapMode.ClampToEdge,
 			T = TextureWrapMode.ClampToEdge,
 			R = TextureWrapMode.ClampToEdge
 		};
 
-		public static WrapMode Repeat = new WrapMode()
+		public static TextureWrappingMode Repeat = new TextureWrappingMode()
 		{
 			S = TextureWrapMode.Repeat,
 			T = TextureWrapMode.Repeat,
 			R = TextureWrapMode.Repeat
 		};
 
-		public static WrapMode Mirror = new WrapMode()
+		public static TextureWrappingMode Mirror = new TextureWrappingMode()
 		{
 			S = TextureWrapMode.MirroredRepeat,
 			T = TextureWrapMode.MirroredRepeat,

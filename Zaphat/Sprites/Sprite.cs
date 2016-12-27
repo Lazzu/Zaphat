@@ -1,37 +1,18 @@
-﻿using System;
 using OpenTK;
 using Zaphat.Assets.Textures;
+using Zaphat.Core;
 
 namespace Zaphat.Sprites
 {
 	public class Sprite
 	{
-		public string Name
-		{
-			get;
-			set;
-		}
+		public string Name;
 
-		public Texture Atlas
-		{
-			get;
-			set;
-		}
+		public Texture Atlas;
 
-		public Vector3 UVOffset
-		{
-			get;
-			set;
-		}
+		public Vector2 texPosition;
 
-		public Vector2 UVSize
-		{
-			get;
-			set;
-		}
-
-		public Sprite()
-		{
-		}
+		public Vector2 texSize;
 	}
 }
+
