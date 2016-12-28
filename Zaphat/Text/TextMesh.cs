@@ -130,10 +130,13 @@ namespace Zaphat.Text
 
 						kerning = _font.GetKerning(prevChar, c);
 
-						pos.X += xAdvance + kerning;
-						pos.Y += yAdvance + kerning;
-						pos.Z += xAdvance + kerning;
-						pos.W += yAdvance + kerning;
+						var xGlyphOffset = xAdvance + kerning;
+						var yGlyphOffset = yAdvance;
+
+						pos.X += xGlyphOffset;
+						pos.Y += yGlyphOffset;
+						pos.Z += xGlyphOffset;
+						pos.W += yGlyphOffset;
 
 						pos *= scale4;
 						uv *= scale4;
