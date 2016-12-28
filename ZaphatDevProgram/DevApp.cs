@@ -262,7 +262,7 @@ namespace ZaphatDevProgram
 			program.BindTextureUnit(normalTexture, "NormalTexture", 1);
 			program.BindTextureUnit(specularTexture, "SpecularTexture", 2);
 
-			var font = Font.Load("Assets/Fonts/font.fnt");
+			var font = Font.Load("Assets/Fonts/font2.fnt");
 
 			var textProgram = new ShaderProgram("SDF");
 			var textVertex = new Shader(ShaderType.VertexShader);

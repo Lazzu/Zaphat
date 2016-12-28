@@ -100,7 +100,7 @@ namespace Zaphat.Assets.Textures
 				tex.Settings = new TextureSettings()
 				{
 					Format = format,
-					MipMapLevel = 0,
+					MipMapLevel = 1,
 				};
 
 				tex.Use();

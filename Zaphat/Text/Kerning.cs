@@ -15,13 +15,13 @@ namespace Zaphat.Text
 			protected set;
 		}
 
-		public int Amount
+		public float Amount
 		{
 			get;
 			protected set;
 		}
 
-		public Kerning(int first, int second, int amount)
+		public Kerning(int first, int second, float amount)
 		{
 			First = first;
 			Second = second;

@@ -14,8 +14,6 @@ namespace Zaphat.Core
 		public readonly int Stride;
 		public readonly int Offset;
 
-		private int location = -1;
-
 		bool yelledAboutLocation = false;
 
 		public VertexAttribute(string name, int size, VertexAttribPointerType type,
@@ -31,7 +29,7 @@ namespace Zaphat.Core
 
 		public void Set(ShaderProgram program)
 		{
-			location = program.GetAttribLocation(this.Name);
+			var location = program.GetAttribLocation(this.Name);
 
 			if (location < 0)
 			{
@@ -41,6 +39,17 @@ namespace Zaphat.Core
 					yelledAboutLocation = true;
 				}
 				return;
+			}
+
+			Set(location);
+		}
+
+		public void Set(int location)
+		{
+			if (location < 0 && !yelledAboutLocation)
+			{
+				Logger.Debug(string.Format("Invalid location: {0}", location));
+				yelledAboutLocation = true;
 			}
 
 			yelledAboutLocation = false;

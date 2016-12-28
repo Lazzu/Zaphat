@@ -24,6 +24,9 @@ namespace Zaphat.Utilities
 			if (bpp < 1 || bpp > 4)
 				throw new ArgumentException("Invalid BPP", nameof(bpp));
 
+			if (channelOffset < 0 || channelOffset >= bpp)
+				throw new ArgumentException("Channel offset can not be less than zero or more than or equal to BPP", nameof(channelOffset));
+
 			W = w;
 			H = h;
 

@@ -18,43 +18,43 @@ namespace Zaphat.Text
 			}
 		}
 
-		public int X
+		public float X
 		{
 			get;
 			protected set;
 		}
 
-		public int Y
+		public float Y
 		{
 			get;
 			protected set;
 		}
 
-		public int Width
+		public float Width
 		{
 			get;
 			protected set;
 		}
 
-		public int Height
+		public float Height
 		{
 			get;
 			protected set;
 		}
 
-		public int XOffset
+		public float XOffset
 		{
 			get;
 			protected set;
 		}
 
-		public int YOffset
+		public float YOffset
 		{
 			get;
 			protected set;
 		}
 
-		public int XAdvance
+		public float XAdvance
 		{
 			get;
 			protected set;
@@ -66,7 +66,7 @@ namespace Zaphat.Text
 			protected set;
 		}
 
-		public Glyph(int id, int x, int y, int w, int h, int xoff, int yoff, int xadv, int page)
+		public Glyph(int id, float x, float y, float w, float h, float xoff, float yoff, float xadv, int page)
 		{
 			Id = id;
 			X = x;

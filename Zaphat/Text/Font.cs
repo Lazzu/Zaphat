@@ -22,25 +22,25 @@ namespace Zaphat.Text
 			protected set;
 		}
 
-		public int LineHeight
+		public float LineHeight
 		{
 			get;
 			protected set;
 		}
 
-		public int Base
+		public float Base
 		{
 			get;
 			protected set;
 		}
 
-		public int ScaleW
+		public float ScaleW
 		{
 			get;
 			protected set;
 		}
 
-		public int ScaleH
+		public float ScaleH
 		{
 			get;
 			protected set;
@@ -68,9 +68,9 @@ namespace Zaphat.Text
 		Dictionary<char, Glyph> GlyphCache = new Dictionary<char, Glyph>();
 
 		List<Kerning> Kernings;
-		Dictionary<int, Dictionary<int, int>> KerningCache = new Dictionary<int, Dictionary<int, int>>();
+		Dictionary<int, Dictionary<int, float>> KerningCache = new Dictionary<int, Dictionary<int, float>>();
 
-		public Font(string face, List<Glyph> glyphs, List<Kerning> kernings, Texture atlas, int lineHeight, int baseValue, int scaleW, int scaleH, int pages, char defaultCharacter, Vector4 padding)
+		public Font(string face, List<Glyph> glyphs, List<Kerning> kernings, Texture atlas, float lineHeight, float baseValue, float scaleW, float scaleH, int pages, char defaultCharacter, Vector4 padding)
 		{
 			Face = face;
 			Glyphs = glyphs;
@@ -107,22 +107,11 @@ namespace Zaphat.Text
 
 		public void GetGlyphVertexData(Glyph g, out Vector4 pos, out Vector4 uv, out float xAdvance)
 		{
-			var sizex = 1f / ScaleW;
-			var sizey = 1f / ScaleH;
-
-			xAdvance = g.XAdvance * sizex;
-
-			pos = new Vector4(-0.5f, -0.5f, 0.5f, 0.5f);
-			pos *= new Vector4(g.Width, g.Height, g.Width, g.Height);
-			pos += Padding;
-			pos += new Vector4(g.XOffset, g.YOffset, g.XOffset, g.YOffset);
-			pos *= new Vector4(sizex, sizey, sizex, sizey);
-
-			uv = new Vector4(g.X, g.Y, g.X + g.Width, g.Y + g.Height);
-			//uv += new Vector4(Padding.X, Padding.W, Padding.Z, Padding.Y);
-			uv += Padding;
-			uv *= new Vector4(sizex, sizey, sizex, sizey);
-			//uv = new Vector4(uv.X, 1.0f - uv.Y, uv.Z, 1.0f - uv.W);
+			xAdvance = g.XAdvance;
+			pos = new Vector4(-g.Width - g.XOffset, -g.Height - g.YOffset, -g.XOffset, -g.YOffset);
+			uv = new Vector4(g.X, ScaleH - (g.Y + g.Height), g.X + g.Width, ScaleH - g.Y);
+			if (g.Character == 't')
+				return; // TODO: Remove this. It's for breakpoint debugging
 		}
 
 		public void WarmupGlyphCache()
@@ -148,7 +137,7 @@ namespace Zaphat.Text
 
 		public void WarmupKerningCache()
 		{
-			Dictionary<int, int> tmp;
+			Dictionary<int, float> tmp;
 
 			for (int i = 0; i < Kernings.Count; i++)
 			{
@@ -156,11 +145,11 @@ namespace Zaphat.Text
 
 				if (!KerningCache.TryGetValue(k.First, out tmp))
 				{
-					tmp = new Dictionary<int, int>();
+					tmp = new Dictionary<int, float>();
 					KerningCache.Add(k.First, tmp);
 				}
 
-				int kVal = 0;
+				float kVal = 0;
 				if (!tmp.TryGetValue(k.Second, out kVal))
 				{
 					tmp.Add(k.Second, k.Amount);
@@ -172,7 +161,7 @@ namespace Zaphat.Text
 			}
 		}
 
-		public int GetKerning(char a, char b)
+		public float GetKerning(char a, char b)
 		{
 			var ag = GetGlyph(a);
 			var bg = GetGlyph(b);
@@ -183,16 +172,16 @@ namespace Zaphat.Text
 			return GetKerning(ag.Id, bg.Id);
 		}
 
-		public int GetKerning(int a, int b)
+		public float GetKerning(int a, int b)
 		{
-			Dictionary<int, int> tmp;
+			Dictionary<int, float> tmp;
 			if (!KerningCache.TryGetValue(a, out tmp))
 			{
 				// No cache for it, no kerning
 				return 0;
 			}
 
-			int output;
+			float output;
 			tmp.TryGetValue(b, out output);
 
 			return output;
@@ -207,6 +196,10 @@ namespace Zaphat.Text
 
 				var chars = new List<Glyph>();
 				var kernings = new List<Kerning>();
+
+				// Scale values to convert everything from pixels to texture coordinates (0...1)
+				float scaleW = data.common.scaleW;
+				float scaleH = data.common.scaleH;
 
 				for (int i = 0; i < data.chars.Length; i++)
 				{
@@ -230,7 +223,7 @@ namespace Zaphat.Text
 				padding.Z = Convert.ToInt32(paddingStrings[2]);
 				padding.W = Convert.ToInt32(paddingStrings[3]);
 
-				var font = new Font(data.info.face, chars, kernings, texture, data.common.lineHeight, data.common.baseValue, data.common.scaleW, data.common.scaleH, data.common.pages, (char)0x7F, padding);
+				var font = new Font(data.info.face, chars, kernings, texture, data.common.lineHeight, data.common.baseValue, scaleW, scaleH, data.common.pages, (char)0x7F, padding);
 
 				Logger.Log(string.Format("Loaded font {0}", path));
 
@@ -289,13 +282,13 @@ namespace Zaphat.Text
 			public class FontCommon
 			{
 				[XmlAttribute]
-				public int lineHeight;
+				public float lineHeight;
 				[XmlAttribute]
-				public int baseValue;
+				public float baseValue;
 				[XmlAttribute]
-				public int scaleW;
+				public float scaleW;
 				[XmlAttribute]
-				public int scaleH;
+				public float scaleH;
 				[XmlAttribute]
 				public int pages;
 				[XmlAttribute]
@@ -315,19 +308,19 @@ namespace Zaphat.Text
 				[XmlAttribute]
 				public int id;
 				[XmlAttribute]
-				public int x;
+				public float x;
 				[XmlAttribute]
-				public int y;
+				public float y;
 				[XmlAttribute]
-				public int width;
+				public float width;
 				[XmlAttribute]
-				public int height;
+				public float height;
 				[XmlAttribute]
-				public int xoffset;
+				public float xoffset;
 				[XmlAttribute]
-				public int yoffset;
+				public float yoffset;
 				[XmlAttribute]
-				public int xadvance;
+				public float xadvance;
 				[XmlAttribute]
 				public int page;
 				[XmlAttribute]
@@ -341,7 +334,7 @@ namespace Zaphat.Text
 				[XmlAttribute]
 				public int second;
 				[XmlAttribute]
-				public int amount;
+				public float amount;
 			}
 		}
 	}

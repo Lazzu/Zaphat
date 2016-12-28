@@ -10,6 +10,6 @@ uniform float scale = 1;
 
 void main()
 {
-    gl_Position = vec4(scale * vec3(position, 0.0), 1.0);
+    gl_Position = vec4(vec3(scale * position, 0.0), 1.0);
     uv = texcoord;
 }
