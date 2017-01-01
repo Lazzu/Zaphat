@@ -251,7 +251,7 @@ namespace ZaphatDevProgram
 
 			textureManager = TextureManager.Global;
 
-			diffuseTexture = textureManager.Load("Assets/Fonts/font.png");
+			diffuseTexture = textureManager.Load("Assets/Fonts/font3.png");
 			normalTexture = textureManager.Load("Assets/Textures/pattern_133_normal.png");
 			specularTexture = textureManager.Load("Assets/Textures/pattern_133_specular.png");
 
@@ -262,7 +262,7 @@ namespace ZaphatDevProgram
 			program.BindTextureUnit(normalTexture, "NormalTexture", 1);
 			program.BindTextureUnit(specularTexture, "SpecularTexture", 2);
 
-			var font = Font.Load("Assets/Fonts/font2.fnt");
+			var font = Font.Load("Assets/Fonts/font3.fnt");
 
 			var textProgram = new ShaderProgram("SDF");
 			var textVertex = new Shader(ShaderType.VertexShader);
@@ -279,8 +279,9 @@ namespace ZaphatDevProgram
 			text = new TextMesh();
 			text.ShaderProgram = textProgram;
 			text.Font = font;
-			//text.Text = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~\u007f€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ";
-			text.Text = "Testaan toimiiko tää teksti";
+			text.Text = "!\"#$%&'()*+,-./0123456789:;<=>?@\nABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`\nabcdefghijklmnopqrstuvwxyz{|}~\u007f€‚ƒ„…†‡ˆ‰Š‹ŒŽ\n‘’“”•–—˜™š›œžŸ ¡¢£¤¥¦§¨©ª«¬­®¯°\n±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×\nØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ";
+			//text.Text = "mutsis";
+			//text.Text = "Testaan toimiiko tämä teksti.";
 
 			Logger.Log("Loaded mandatory assets, now able to start running!");
 		}

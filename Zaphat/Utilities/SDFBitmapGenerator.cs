@@ -5,9 +5,6 @@ namespace Zaphat.Utilities
 {
 	public static class SDFBitmapGenerator
 	{
-		static Vector2d inside = Vector2d.One * 9999;
-		static Vector2d empty = Vector2d.Zero;
-
 		static int W, H;
 
 		/// <summary>
@@ -19,7 +16,7 @@ namespace Zaphat.Utilities
 		/// <param name="h">The height of the map.</param>
 		/// <param name="bpp">Bytes per pixel.</param>
 		/// <param name="channelOffset">Channel offset of which colour channel to read from.</param>
-		public static byte[] GenerateSDF(byte[] data, int w, int h, int bpp, int channelOffset = 0)
+		public static float[] GenerateSDF(byte[] data, int w, int h, int bpp, int channelOffset = 0)
 		{
 			if (bpp < 1 || bpp > 4)
 				throw new ArgumentException("Invalid BPP", nameof(bpp));
@@ -30,6 +27,9 @@ namespace Zaphat.Utilities
 			W = w;
 			H = h;
 
+			var inside = Vector2d.One * new Vector2d(w, h) * 2;
+			var empty = Vector2d.Zero;
+
 			// Create grids and initialize data
 			var grid1 = new Vector2d[w * h];
 			var grid2 = new Vector2d[w * h];
@@ -37,16 +37,15 @@ namespace Zaphat.Utilities
 			{
 				for (int x = 0; x < w; x++)
 				{
-					var p = y * h + x;
 					if (data[y * h * bpp + x * bpp + channelOffset] < 128)
 					{
-						grid1[p] = inside;
-						grid2[p] = empty;
+						Put(grid1, x, y, inside);
+						Put(grid2, x, y, empty);
 					}
 					else
 					{
-						grid1[p] = empty;
-						grid2[p] = inside;
+						Put(grid1, x, y, empty);
+						Put(grid2, x, y, inside);
 					}
 				}
 			}
@@ -54,7 +53,7 @@ namespace Zaphat.Utilities
 			GenerateSDF(grid1, w, h);
 			GenerateSDF(grid2, w, h);
 
-			var output = new byte[w * h * bpp];
+			var output = new float[w * h];
 
 			for (int y = 0; y < h; y++)
 			{
@@ -66,16 +65,13 @@ namespace Zaphat.Utilities
 					var dist = dist1 - dist2;
 
 					// Clamp and scale it, just for display purposes.
-					var c = dist * 3 + 128;
+					/*var c = dist * 3 + 128;
 					if (c < 0) c = 0;
-					if (c > 255) c = 255;
+					if (c > 255) c = 255;*/
 
-					var p = (y * h * bpp + x * bpp);
+					var p = (y * h + x);
 
-					for (int i = 0; i < bpp; i++)
-					{
-						output[p + i] = (byte)c;
-					}
+					output[p] = (float)dist;
 				}
 			}
 
@@ -129,7 +125,7 @@ namespace Zaphat.Utilities
 
 		static void Put(Vector2d[] g, int x, int y, Vector2d p)
 		{
-			g[y * H + x] = p;
+			g[y * W + x] = p;
 		}
 
 		static Vector2d Get(Vector2d[] g, int x, int y)
@@ -139,7 +135,7 @@ namespace Zaphat.Utilities
 			if (x >= 0 && y >= 0 && x < W && y < H)
 				return g[W * y + x];
 
-			return empty;
+			return Vector2d.Zero;
 		}
 
 		static void Compare(Vector2d[] g, ref Vector2d p, int x, int y, int offx, int offy)

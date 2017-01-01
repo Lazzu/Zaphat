@@ -84,8 +84,6 @@ namespace Zaphat.Text
 			if (_font == null)
 				return;
 
-			var chars = _text.ToCharArray();
-
 			// TODO: Optimization: Do not use list, and use a separate vertex array and use raw uploading for the buffer
 			var vertices = new List<Vertex>();
 
@@ -96,83 +94,87 @@ namespace Zaphat.Text
 			float kerning = 0;
 			float xAdv = 0;
 
-			var scale2 = new Vector2(1.0f / _font.ScaleW, 1.0f / _font.ScaleH);
-			var scale4 = new Vector4(scale2.X, scale2.Y, scale2.X, scale2.Y);
-
 			// How much the character has offset in the mesh?
 			float xAdvance = 0;
 			float yAdvance = _font.Base;
 
 			charactersToDraw = 0;
 
-			for (int i = 0; i < chars.Length; i++)
+			// Split in to lines
+			var lines = _text.Split('\n');
+
+			for (int line = 0; line < lines.Length; line++)
 			{
-				char c = chars[i];
+				var text = lines[line];
+				var chars = text.ToCharArray();
 
-				switch (c)
+				for (int i = 0; i < chars.Length; i++)
 				{
-					// TODO: Special cases for \n, space, tab, etc..
+					char c = chars[i];
 
-					// \n
-					case (char)13:
-						xAdvance = 0;
-						yAdvance += _font.LineHeight;
-						break;
-					// Space bar
-					case (char)32:
-						_font.GetGlyphVertexData(c, out pos, out uv, out xAdv);
-						kerning = _font.GetKerning(prevChar, c);
-						xAdvance += xAdv + kerning;
-						break;
-					// Normal text, add it to the vertices
-					default:
-						_font.GetGlyphVertexData(c, out pos, out uv, out xAdv);
+					_font.GetGlyphVertexData(c, out pos, out uv, out xAdv);
+					kerning = _font.GetKerning(prevChar, c);
+					xAdvance += xAdv + kerning;
 
-						kerning = _font.GetKerning(prevChar, c);
+					switch (c)
+					{
+						// TODO: Special cases for space, tab, etc..
 
-						var xGlyphOffset = xAdvance + kerning;
-						var yGlyphOffset = yAdvance;
 
-						pos.X += xGlyphOffset;
-						pos.Y += yGlyphOffset;
-						pos.Z += xGlyphOffset;
-						pos.W += yGlyphOffset;
+						// Space bar
+						case (char)32:
+							// Do nothing
+							break;
 
-						pos *= scale4;
-						uv *= scale4;
+						// Normal text, add it to the vertices
+						default:
 
-						// Vertices
-						var v0 = new Vertex(pos.Xy, uv.Xy);
-						var v1 = new Vertex(pos.Xw, uv.Xw);
-						var v2 = new Vertex(pos.Zy, uv.Zy);
-						var v3 = new Vertex(pos.Zw, uv.Zw);
+							pos.X += xAdvance;
+							pos.Y += yAdvance;
+							pos.Z += xAdvance;
+							pos.W += yAdvance;
 
-						// Add two triangles
-						vertices.Add(v0);
-						vertices.Add(v1);
-						vertices.Add(v2);
+							// Vertices for a rectangle
+							var v0 = new Vertex(pos.Xy, uv.Xy);
+							var v1 = new Vertex(pos.Xw, uv.Xw);
+							var v2 = new Vertex(pos.Zy, uv.Zy);
+							var v3 = new Vertex(pos.Zw, uv.Zw);
 
-						vertices.Add(v1);
-						vertices.Add(v2);
-						vertices.Add(v3);
+							// Add two triangles to make a rectangle
+							vertices.Add(v0);
+							vertices.Add(v1);
+							vertices.Add(v2);
 
-						// Advance
-						xAdvance += xAdv;
+							vertices.Add(v1);
+							vertices.Add(v2);
+							vertices.Add(v3);
 
-						charactersToDraw++;
+							charactersToDraw++;
 
-						break;
+							break;
+					}
+
+					prevChar = c;
 				}
 
-				prevChar = c;
+				xAdvance = 0;
+				yAdvance -= _font.LineHeight;
 			}
+
+
 
 			vertexBuffer.Data = vertices.ToArray();
 		}
 
+		int frame = 0;
+
 		public void Draw()
 		{
 			ShaderProgram.Use();
+
+			ShaderProgram.SendUniform("Scale", new Vector2(1.0f / _font.ScaleW, 1.0f / _font.ScaleH));
+			ShaderProgram.SendUniform("TextureHeight", _font.ScaleH);
+			ShaderProgram.SendUniform("Frame", frame++);
 
 			vao.Bind();
 			vertexBuffer.BindForDrawing();

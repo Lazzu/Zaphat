@@ -109,7 +109,7 @@ namespace Zaphat.Text
 		{
 			xAdvance = g.XAdvance;
 			pos = new Vector4(-g.Width - g.XOffset, -g.Height - g.YOffset, -g.XOffset, -g.YOffset);
-			uv = new Vector4(g.X, ScaleH - (g.Y + g.Height), g.X + g.Width, ScaleH - g.Y);
+			uv = new Vector4(g.X, (g.Y + g.Height), g.X + g.Width, g.Y);
 			if (g.Character == 't')
 				return; // TODO: Remove this. It's for breakpoint debugging
 		}
@@ -213,7 +213,7 @@ namespace Zaphat.Text
 					kernings.Add(new Kerning(k.first, k.second, k.amount));
 				}
 
-				var texture = TextureManager.Global.LoadToSDF(data.pages[0].file);
+				var texture = TextureManager.Global.Load(data.pages[0].file);
 
 				var paddingStrings = data.info.padding.Split(',');
 				var padding = Vector4.Zero;
