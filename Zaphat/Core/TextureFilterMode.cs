@@ -23,6 +23,18 @@ namespace Zaphat.Core
 			protected set;
 		}
 
+        protected TextureFilterMode(){}
+
+        public static TextureFilterMode Custom(TextureMinFilter min, TextureMinFilter mip, TextureMagFilter mag)
+        {
+            return new TextureFilterMode()
+            {
+                Min = min,
+                MinMip = mip,
+                Mag = mag,
+            };
+        }
+
 		public static TextureFilterMode Nearest = new TextureFilterMode()
 		{
 			Min = TextureMinFilter.Nearest,

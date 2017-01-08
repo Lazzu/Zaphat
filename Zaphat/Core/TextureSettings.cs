@@ -9,25 +9,25 @@ namespace Zaphat.Core
 		public TextureWrappingMode WrapMode
 		{
 			get;
-			set;
+			protected set;
 		}
 
 		public TextureFilterMode FilterMode
 		{
 			get;
-			set;
+			protected set;
 		}
 
 		public float AnisotrophyLevel
 		{
 			get;
-			set;
+			protected set;
 		}
 
 		public int MipMapLevel
 		{
 			get;
-			set;
+			protected set;
 		}
 
 		public PixelInternalFormat Format { get; set; }
@@ -35,10 +35,18 @@ namespace Zaphat.Core
 		public TextureSettings()
 		{
 			WrapMode = TextureWrappingMode.Repeat;
-			FilterMode = TextureFilterMode.Trilinear;
-			Format = PixelInternalFormat.Rgb;
+			FilterMode = TextureFilterMode.Nearest;
+			Format = PixelInternalFormat.Rgba;
 			MipMapLevel = 0;
 		}
+
+        public TextureSettings(TextureWrappingMode wrap, TextureFilterMode filter, float aniso, int mip)
+        {
+            WrapMode = wrap;
+            FilterMode = filter;
+            AnisotrophyLevel = aniso;
+            MipMapLevel = mip;
+        }
 
 		public void Apply(TextureTarget target)
 		{

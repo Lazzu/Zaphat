@@ -255,10 +255,14 @@ namespace ZaphatDevProgram
 			normalTexture = textureManager.Load("Assets/Textures/pattern_133_normal.png");
 			specularTexture = textureManager.Load("Assets/Textures/pattern_133_specular.png");
 
-			diffuseTexture.Settings.AnisotrophyLevel = 16;
+            Logger.CheckGLError();
+
+            diffuseTexture.Settings = new TextureSettings(TextureWrappingMode.Repeat, TextureFilterMode.Trilinear, 16f, 1);
 			diffuseTexture.ApplySettings();
 
-			program.BindTextureUnit(diffuseTexture, "DiffuseTexture", 0);
+            Logger.CheckGLError();
+
+            program.BindTextureUnit(diffuseTexture, "DiffuseTexture", 0);
 			program.BindTextureUnit(normalTexture, "NormalTexture", 1);
 			program.BindTextureUnit(specularTexture, "SpecularTexture", 2);
 
@@ -291,7 +295,7 @@ namespace ZaphatDevProgram
 			base.OnKeyUp(e);
 			if (e.Key == OpenTK.Input.Key.A)
 			{
-				if (diffuseTexture.Settings.AnisotrophyLevel > 1)
+				/*if (diffuseTexture.Settings.AnisotrophyLevel > 1)
 				{
 					diffuseTexture.Settings.AnisotrophyLevel = 0;
 				}
@@ -299,7 +303,7 @@ namespace ZaphatDevProgram
 				{
 					diffuseTexture.Settings.AnisotrophyLevel = 16;
 				}
-				diffuseTexture.ApplySettings();
+				diffuseTexture.ApplySettings();*/
 			}
 		}
 

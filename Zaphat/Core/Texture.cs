@@ -77,8 +77,9 @@ namespace Zaphat.Core
 
 		public void SetTextureUnit(int unit)
 		{
-			GL.BindTextureUnit(unit, GLName);
-			ActivateUnit(unit);
+            //Use();
+            ActivateUnit(unit);
+            GL.BindTextureUnit(unit, GLName);
 		}
 
 		static HashSet<int> activatedUnits = new HashSet<int>();

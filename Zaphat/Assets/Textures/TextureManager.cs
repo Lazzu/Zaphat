@@ -18,59 +18,57 @@ namespace Zaphat.Assets.Textures
 			throw new NotImplementedException();
 		}
 
+        public Texture Load(Stream stream, TextureSettings textureSettings)
+        {
+            Texture tex = null;
 
+            using (Bitmap bmp = new Bitmap(stream))
+            {
+                tex = new Texture(TextureTarget.Texture2D)
+                {
+                    Settings = textureSettings,
+                };
+
+                PixelFormat bmpFormat;
+
+                switch (bmp.PixelFormat)
+                {
+                    case System.Drawing.Imaging.PixelFormat.Format24bppRgb:
+                        bmpFormat = PixelFormat.Bgr;
+                        break;
+                    case System.Drawing.Imaging.PixelFormat.Format32bppArgb:
+                        bmpFormat = PixelFormat.Bgra;
+                        break;
+                    default:
+                        throw new NotSupportedException("Only RGB and RGBA image formats are supported for now!");
+                }
+
+                tex.Use();
+
+                var bits = bmp.LockBits(new Rectangle(new Point(0, 0), new Size(bmp.Width, bmp.Height)), System.Drawing.Imaging.ImageLockMode.ReadOnly, bmp.PixelFormat);
+
+                GL.TexImage2D(TextureTarget.Texture2D, 0, textureSettings.Format, bmp.Width, bmp.Height, 0, bmpFormat, PixelType.UnsignedByte, bits.Scan0);
+
+                if (tex.Settings.MipMapLevel > 0)
+                {
+                    GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+                }
+
+                bmp.UnlockBits(bits);
+
+                tex.UnBind();
+            }
+
+            Logger.Log(string.Format("Loaded texture {0}", tex.GLName));
+
+            return tex;
+        }
 
 		public Texture Load(Stream stream)
 		{
-			Texture tex = null;
-
-			using (Bitmap bmp = new Bitmap(stream))
-			{
-				tex = new Texture(TextureTarget.Texture2D);
-
-				PixelInternalFormat format;
-				PixelFormat bmpFormat;
-
-				switch (bmp.PixelFormat)
-				{
-					case System.Drawing.Imaging.PixelFormat.Format24bppRgb:
-						format = PixelInternalFormat.Rgb;
-						bmpFormat = PixelFormat.Bgr;
-						break;
-					case System.Drawing.Imaging.PixelFormat.Format32bppArgb:
-						format = PixelInternalFormat.Rgba;
-						bmpFormat = PixelFormat.Bgra;
-						break;
-					default:
-						throw new NotSupportedException("Only RGB and RGBA image formats are supported for now!");
-				}
-
-				tex.Settings = new TextureSettings()
-				{
-					Format = format,
-					MipMapLevel = 0,
-				};
-
-				tex.Use();
-
-				var bits = bmp.LockBits(new Rectangle(new Point(0, 0), new Size(bmp.Width, bmp.Height)), System.Drawing.Imaging.ImageLockMode.ReadOnly, bmp.PixelFormat);
-
-				GL.TexImage2D(TextureTarget.Texture2D, 0, format, bmp.Width, bmp.Height, 0, bmpFormat, PixelType.UnsignedByte, bits.Scan0);
-
-				if (tex.Settings.MipMapLevel > 0)
-				{
-					GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
-				}
-
-				bmp.UnlockBits(bits);
-
-				tex.UnBind();
-			}
-
-			Logger.Log(string.Format("Loaded texture {0}", tex.GLName));
-
-			return tex;
-		}
+            var settings = new TextureSettings(); // Load with default settings
+            return Load(stream, settings);
+        }
 
 		public Texture LoadToSDF(Stream stream)
 		{
@@ -80,11 +78,7 @@ namespace Zaphat.Assets.Textures
 			{
 				tex = new Texture2D();
 
-				tex.Settings = new TextureSettings()
-				{
-					Format = PixelInternalFormat.DepthComponent32f,
-					MipMapLevel = 1,
-				};
+                tex.Settings = new TextureSettings(TextureWrappingMode.Repeat, TextureFilterMode.Trilinear, 0f, 1);
 
 				tex.Use();
 
@@ -93,11 +87,6 @@ namespace Zaphat.Assets.Textures
 				var sdfBytes = SDFBitmapGenerator.GenerateSDF(bytes, bmp.Width, bmp.Height, Image.GetPixelFormatSize(bmp.PixelFormat) / 8);
 
 				GL.TexImage2D(TextureTarget.Texture2D, 0, tex.Settings.Format, bmp.Width, bmp.Height, 0, PixelFormat.DepthComponent, PixelType.Float, sdfBytes);
-
-				if (tex.Settings.MipMapLevel > 0)
-				{
-					GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
-				}
 
 				tex.UnBind();
 			}
