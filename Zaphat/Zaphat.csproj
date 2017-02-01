@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Application\ZapApp.cs" />
     <Compile Include="Assets\Asset.cs" />
+    <Compile Include="Assets\Textures\SubTexture.cs" />
     <Compile Include="Core\DefaultViewProjectionBuffer.cs" />
     <Compile Include="Core\DefaultViewProjectionData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="Core\GPUResourceManager.cs" />
     <Compile Include="Core\GPUResourceManagers.cs" />
     <Compile Include="Core\TextureNameManager.cs" />
+    <Compile Include="Sprites\SpriteRenderer.cs" />
     <Compile Include="Utilities\Logger.cs" />
     <Compile Include="Utilities\Time.cs" />
     <Compile Include="Assets\Textures\TextureManager.cs" />

@@ -34,10 +34,11 @@ namespace Zaphat.Core
 
 		public TextureSettings()
 		{
-			WrapMode = TextureWrappingMode.Repeat;
-			FilterMode = TextureFilterMode.Nearest;
+			WrapMode = TextureWrappingMode.Clamp;
+			FilterMode = TextureFilterMode.Trilinear;
 			Format = PixelInternalFormat.Rgba;
-			MipMapLevel = 0;
+			MipMapLevel = 10;
+		    AnisotrophyLevel = 16.0f;
 		}
 
         public TextureSettings(TextureWrappingMode wrap, TextureFilterMode filter, float aniso, int mip)

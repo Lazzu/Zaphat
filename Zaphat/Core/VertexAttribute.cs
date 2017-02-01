@@ -29,13 +29,13 @@ namespace Zaphat.Core
 
 		public void Set(ShaderProgram program)
 		{
-			var location = program.GetAttribLocation(this.Name);
+			var location = program.GetAttribLocation(Name);
 
 			if (location < 0)
 			{
 				if (!yelledAboutLocation)
 				{
-					Logger.Debug(string.Format("Did not find location \"{1}\" for attribute from program {0}", program.Name, this.Name));
+					Logger.Debug($"Did not find location \"{Name}\" for attribute from program {program.Name}");
 					yelledAboutLocation = true;
 				}
 				return;
@@ -48,7 +48,7 @@ namespace Zaphat.Core
 		{
 			if (location < 0 && !yelledAboutLocation)
 			{
-				Logger.Debug(string.Format("Invalid location: {0}", location));
+				Logger.Debug($"Invalid location: {location}");
 				yelledAboutLocation = true;
 			}
 

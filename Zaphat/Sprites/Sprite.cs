@@ -8,11 +8,7 @@ namespace Zaphat.Sprites
 	{
 		public string Name;
 
-		public Texture Atlas;
-
-		public Vector2 texPosition;
-
-		public Vector2 texSize;
+		public SubTexture Texture;
 	}
 }
 

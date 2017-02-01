@@ -1,7 +1,7 @@
 ﻿#version 410
 
 
-#define ANTIALIAS 1
+//#define ANTIALIAS 1
 
 in vec2 uv;
 
@@ -20,7 +20,7 @@ out vec4 fragColor;
 void main()
 {
 	vec4 texel = texture2D(sdfTexture, Scale * vec2(uv.x, uv.y));
-    float dist = 1.0 - texel.a;
+    float dist = 1.0 - texel.r;
 #if ANTIALIAS
     float d  = (dist - 0.5); // distance rebias 0..1 --> -0.5 .. +0.5
     float aa = (startDistance + borderStart + borderWidth) * length( vec2( dFdx( d ), dFdy( d ) ) ); // anti-alias

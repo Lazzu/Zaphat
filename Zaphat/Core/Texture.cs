@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using OpenTK;
 using OpenTK.Graphics.OpenGL4;
+using Zaphat.Assets.Textures;
 using Zaphat.Core;
 
 namespace Zaphat.Core
@@ -9,6 +11,9 @@ namespace Zaphat.Core
 	{
 		TextureSettings settings;
 		bool dirtySettings;
+
+	    private List<SubTexture> subTextures;
+	    private int subTextureCounter = 0;
 
 		public TextureSettings Settings
 		{
@@ -30,19 +35,7 @@ namespace Zaphat.Core
 			protected set;
 		}
 
-		public int Width
-		{
-			get;
-			set;
-		}
-
-		public int Height
-		{
-			get;
-			set;
-		}
-
-		public Texture(TextureTarget target)
+	    public Texture(TextureTarget target)
 		{
 			//GLName = GPUResourceManagers.TextureNameManager.Get();
 			GLName = GL.GenTexture();
@@ -82,7 +75,29 @@ namespace Zaphat.Core
             GL.BindTextureUnit(unit, GLName);
 		}
 
-		static HashSet<int> activatedUnits = new HashSet<int>();
+	    public SubTexture CreateSubTexture(Box2 region)
+	    {
+	        if (subTextures == null)
+	            subTextures = new List<SubTexture>();
+
+	        var tex = new SubTexture(this)
+	        {
+	            Region = region,
+	            Path = $"{Path}.{subTextureCounter}",
+	        };
+
+	        subTextures.Add(tex);
+	        subTextureCounter++;
+
+	        return tex;
+	    }
+
+	    public void RemoveSubTexture(SubTexture subTexture)
+	    {
+	        subTextures.Remove(subTexture);
+	    }
+
+	    static HashSet<int> activatedUnits = new HashSet<int>();
 		public static void ActivateUnit(int unit)
 		{
 			if (unit < 0) throw new ArgumentException("Texture unit to activate can only be 0 or larger");
@@ -94,5 +109,7 @@ namespace Zaphat.Core
 			GL.ActiveTexture(TextureUnit.Texture0 + unit);
 			activatedUnits.Add(unit);
 		}
+
+
 	}
 }

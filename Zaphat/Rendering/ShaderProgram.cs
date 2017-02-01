@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
-using Zaphat.Assets.Textures;
 using Zaphat.Core;
 using Zaphat.Utilities;
 
@@ -10,10 +9,10 @@ namespace Zaphat.Rendering
 {
 	public class ShaderProgram
 	{
-		public Guid ID { get; protected set; }
+		public Guid Id { get; protected set; }
 		public string Name { get; protected set; }
 
-		public int GLName
+		public int GlName
 		{
 			get;
 			protected set;
@@ -25,19 +24,19 @@ namespace Zaphat.Rendering
 
 		public ShaderProgram(Guid id, string name)
 		{
-			ID = id;
+			Id = id;
 			Name = name;
-			GLName = GL.CreateProgram();
+			GlName = GL.CreateProgram();
 		}
 
 		public void Release()
 		{
-			GL.DeleteProgram(GLName);
+			GL.DeleteProgram(GlName);
 		}
 
 		public void AttachShader(Shader shader)
 		{
-			GL.AttachShader(GLName, shader.Name);
+			GL.AttachShader(GlName, shader.Name);
 		}
 
 		public void AttachShaders(params Shader[] shaders)
@@ -50,19 +49,15 @@ namespace Zaphat.Rendering
 
 		public void Link()
 		{
-			GL.LinkProgram(GLName);
-			/*var info = GL.GetProgramInfoLog(GLName);
+			GL.LinkProgram(GlName);
 
-			if (!string.IsNullOrEmpty(info))
-				Logger.Debug(info);*/
-
-			Logger.CheckGLError(string.Format("Linking program {0}", Name));
-			Logger.Log(string.Format("Linked program {0}", Name));
+			Logger.CheckGLError($"Linking program {Name}");
+			Logger.Log($"Linked program {Name}");
 		}
 
 		public void Use()
 		{
-			GL.UseProgram(GLName);
+			GL.UseProgram(GlName);
 		}
 
 		public void UnUse()
@@ -72,8 +67,8 @@ namespace Zaphat.Rendering
 
 		#region Uniforms
 
-		Dictionary<string, int> uniforms = new Dictionary<string, int>();
-		Dictionary<string, int> blocks = new Dictionary<string, int>();
+	    private readonly Dictionary<string, int> _uniforms = new Dictionary<string, int>();
+	    private readonly Dictionary<string, int> _blocks = new Dictionary<string, int>();
 
 		/// <summary>
 		/// Tries to find the location of an uniform from this ShaderProgram object.
@@ -82,7 +77,7 @@ namespace Zaphat.Rendering
 		/// <returns>True if uniform was found. Otherwise false.</returns>
 		public bool FindUniformLocation(string name)
 		{
-			int location = GetUniformLocation(name);
+			var location = GetUniformLocation(name);
 
 			// Check for valid response
 			return location != -1;
@@ -95,47 +90,47 @@ namespace Zaphat.Rendering
 		/// <returns>True if uniform block index was found. False otherwise.</returns>
 		public bool FindUniformBlockIndex(string name)
 		{
-			int index = GetUniformBlockIndex(name);
+			var index = GetUniformBlockIndex(name);
 
 			var found = index != -1;
 
 			if (!found)
 			{
-				Utilities.Logger.Debug("Did not find uniform block \"" + name + "\" from shader \"" + Name + "\"");
+				Logger.Debug("Did not find uniform block \"" + name + "\" from shader \"" + Name + "\"");
 			}
 
 			return found;
 		}
 
-		int GetUniformBlockIndex(string name)
+	    private int GetUniformBlockIndex(string name)
 		{
 			int index;
-			if (!blocks.TryGetValue(name, out index))
-			{
-				index = GL.GetUniformBlockIndex(GLName, name);
+		    if (_blocks.TryGetValue(name, out index))
+		        return index;
 
-				Zaphat.Utilities.Logger.CheckGLError(string.Format("GLName: {0}, name:{1}", GLName, name));
+		    index = GL.GetUniformBlockIndex(GlName, name);
 
-				if (index < 0)
-				{
-					Utilities.Logger.Debug("Did not find uniform block \"" + name + "\" from shader \"" + Name + "\" with GLName " + GLName + "");
-				}
+		    Logger.CheckGLError($"GLName: {GlName}, name:{name}");
 
-				blocks.Add(name, index);
-			}
-			return index;
+		    if (index < 0)
+		    {
+		        Logger.Debug("Did not find uniform block \"" + name + "\" from shader \"" + Name + "\" with GLName " + GlName + "");
+		    }
+
+		    _blocks.Add(name, index);
+		    return index;
 		}
 
-		int GetUniformLocation(string name)
+	    private int GetUniformLocation(string name)
 		{
 			int location;
-			if (!uniforms.TryGetValue(name, out location))
-			{
-				location = GL.GetUniformLocation(GLName, name);
+		    if (_uniforms.TryGetValue(name, out location))
+		        return location;
 
-				uniforms.Add(name, location);
-			}
-			return location;
+		    location = GL.GetUniformLocation(GlName, name);
+
+		    _uniforms.Add(name, location);
+		    return location;
 		}
 
 		public void BindUniformBlock<T>(string name, UniformBufferObject<T> buffer) where T : struct
@@ -145,7 +140,7 @@ namespace Zaphat.Rendering
 			if (index < 0)
 				return;
 
-			GL.UniformBlockBinding(GLName, index, buffer.BindingPoint);
+			GL.UniformBlockBinding(GlName, index, buffer.BindingPoint);
 		}
 
 		public void BindTextureUnit(Texture texture, string uniform, int unit)
@@ -158,8 +153,7 @@ namespace Zaphat.Rendering
 
 		public void SendUniform(string name, float value)
 		{
-			int location = GetUniformLocation(name);
-			GL.Uniform1(location, value);
+			GL.Uniform1(GetUniformLocation(name), value);
 		}
 
 		public void SendUniform(string name, double value)
@@ -192,17 +186,27 @@ namespace Zaphat.Rendering
 			GL.Uniform3(GetUniformLocation(name), ref value);
 		}
 
-		public void SendUniform(string name, ref Vector4 value)
-		{
-			GL.Uniform4(GetUniformLocation(name), ref value);
-		}
+        public void SendUniform(string name, ref Vector4 value)
+        {
+            GL.Uniform4(GetUniformLocation(name), ref value);
+        }
 
-		public void SendUniform(string name, Vector4 value)
-		{
-			GL.Uniform4(GetUniformLocation(name), ref value);
-		}
+        public void SendUniform(string name, Vector4 value)
+        {
+            GL.Uniform4(GetUniformLocation(name), ref value);
+        }
 
-		public void SendUniform(string name, ref Matrix2 value)
+        public void SendUniform(string name, Quaternion value)
+        {
+            GL.Uniform4(GetUniformLocation(name), new Vector4(value.Xyz, value.W));
+        }
+
+        public void SendUniform(string name, ref Quaternion value)
+        {
+            GL.Uniform4(GetUniformLocation(name), new Vector4(value.Xyz, value.W));
+        }
+
+	    public void SendUniform(string name, ref Matrix2 value)
 		{
 			GL.UniformMatrix2(GetUniformLocation(name), false, ref value);
 		}
@@ -235,18 +239,17 @@ namespace Zaphat.Rendering
 		#endregion
 
 
-		Dictionary<string, int> attrLocations = new Dictionary<string, int>();
+	    private readonly Dictionary<string, int> _attrLocations = new Dictionary<string, int>();
 
 		internal int GetAttribLocation(string attribName)
 		{
-			int location = -1;
-			if (!attrLocations.TryGetValue(attribName, out location))
-			{
-				location = GL.GetAttribLocation(GLName, attribName);
-				attrLocations.Add(attribName, location);
-				Logger.CheckGLError("Attrib location");
-			}
-			return location;
+			int location;
+		    if (_attrLocations.TryGetValue(attribName, out location))
+		        return location;
+		    location = GL.GetAttribLocation(GlName, attribName);
+		    _attrLocations.Add(attribName, location);
+		    Logger.CheckGLError("Attrib location");
+		    return location;
 		}
 	}
 }

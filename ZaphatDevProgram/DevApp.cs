@@ -13,34 +13,34 @@ namespace ZaphatDevProgram
 {
 	public class DevApp : ZapApp
 	{
-		Random r = new Random();
+		Random _r = new Random();
 
-		ShaderProgram program;
+		ShaderProgram _program;
 
-		Shader vertex;
-		Shader fragment;
+		Shader _vertex;
+		Shader _fragment;
 
-		VertexArrayObject vao;
-		ElementArrayBuffer<int> indices;
-		ArrayBufferVector3 vertices;
-		ArrayBufferVector3 normals;
-		ArrayBufferVector4 colors;
-		ArrayBufferVector2 tcoords;
+		VertexArrayObject _vao;
+		ElementArrayBuffer<int> _indices;
+		ArrayBufferVector3 _vertices;
+		ArrayBufferVector3 _normals;
+		ArrayBufferVector4 _colors;
+		ArrayBufferVector2 _tcoords;
 
-		DefaultTransformBuffer Transform;
-		DefaultViewProjectionBuffer ViewProjection;
+		DefaultTransformBuffer _transform;
+		DefaultViewProjectionBuffer _viewProjection;
 
-		Matrix4 projectionMatrix = Matrix4.Identity;
-		Matrix4 viewMatrix = Matrix4.Identity;
-		Vector3 CameraPosition;
-		Vector3 CameraDirection = new Vector3(0, 0, 1f);
+		Matrix4 _projectionMatrix = Matrix4.Identity;
+		Matrix4 _viewMatrix = Matrix4.Identity;
+		Vector3 _cameraPosition;
+		Vector3 _cameraDirection = new Vector3(0, 0, 1f);
 
-		TextureManager textureManager;
-		Texture diffuseTexture;
-		Texture normalTexture;
-		Texture specularTexture;
+		TextureManager _textureManager;
+		Texture _diffuseTexture;
+		Texture _normalTexture;
+		Texture _specularTexture;
 
-		TextMesh text;
+		TextMesh _text;
 
 		public DevApp(int width, int height, GraphicsMode mode) : base(width, height, mode)
 		{
@@ -57,24 +57,24 @@ namespace ZaphatDevProgram
 			GL.ClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			GL.Hint(HintTarget.LineSmoothHint, HintMode.Nicest);
 
-			vao = new VertexArrayObject();
+			_vao = new VertexArrayObject();
 
-			vao.Bind();
+			_vao.Bind();
 
-			indices = new ElementArrayBuffer<int>();
+			_indices = new ElementArrayBuffer<int>();
 
 			var indexData = new int[36];
-			for (int i = 0; i < indexData.Length; i++)
+			for (var i = 0; i < indexData.Length; i++)
 			{
 				indexData[i] = i;
 			}
 
-			indices.Bind();
-			indices.Upload(indexData);
+			_indices.Bind();
+			_indices.Upload(indexData);
 
-			vertices = new ArrayBufferVector3();
+			_vertices = new ArrayBufferVector3();
 
-			var vertexData = new Vector3[] {
+			var vertexData = new[] {
 				new Vector3(-1.0f, -1.0f, 1.0f),
 				new Vector3(1.0f, -1.0f, -1.0f),
 				new Vector3(-1.0f, -1.0f, -1.0f),
@@ -118,27 +118,27 @@ namespace ZaphatDevProgram
 				new Vector3(1.0f, 1.0f, 1.0f),
 			};
 
-			vertices.Bind();
-			vertices.Upload(vertexData);
-			vertices.BindVertexAttrib(0);
+			_vertices.Bind();
+			_vertices.Upload(vertexData);
+			_vertices.BindVertexAttrib(0);
 
-			normals = new ArrayBufferVector3();
+			_normals = new ArrayBufferVector3();
 
 			var normal = new Vector3(1, 1, 1).Normalized();
 
 			var normalData = new Vector3[vertexData.Length];
-			for (int i = 0; i < normalData.Length; i++)
+			for (var i = 0; i < normalData.Length; i++)
 			{
 				normalData[i] = vertexData[i] * normal;
 			}
 
-			normals.Bind();
-			normals.Upload(normalData);
-			normals.BindVertexAttrib(3);
+			_normals.Bind();
+			_normals.Upload(normalData);
+			_normals.BindVertexAttrib(3);
 
-			tcoords = new ArrayBufferVector2();
+			_tcoords = new ArrayBufferVector2();
 
-			var tcoordData = new Vector2[]
+			var tcoordData = new[]
 			{
 				new Vector2(0f, 1.0f),
 				new Vector2(1.0f, 0f),
@@ -182,89 +182,77 @@ namespace ZaphatDevProgram
 				new Vector2(0.0f, 1.0f),
 				new Vector2(1.0f, 1.0f),
 			};
-			/*for (int i = 0; i < 6; i++)
-			{
-				tcoordData[i * 6 + 0] = new Vector2(0, 1);
-				tcoordData[i * 6 + 1] = new Vector2(1, 0);
-				tcoordData[i * 6 + 2] = new Vector2(0, 0);
 
-				tcoordData[i * 6 + 3] = new Vector2(0, 1);
-				tcoordData[i * 6 + 4] = new Vector2(1, 1);
-				tcoordData[i * 6 + 5] = new Vector2(1, 0);
-			}*/
+			_tcoords.Bind();
+			_tcoords.Upload(tcoordData);
+			_tcoords.BindVertexAttrib(2);
 
-			tcoords.Bind();
-			tcoords.Upload(tcoordData);
-			tcoords.BindVertexAttrib(2);
-
-			colors = new ArrayBufferVector4();
+			_colors = new ArrayBufferVector4();
 
 			var colorData = new Vector4[vertexData.Length];
-			for (int i = 0; i < colorData.Length; i++)
+			for (var i = 0; i < colorData.Length; i++)
 			{
 				colorData[i] = Vector4.One;
 			}
 
-			colors.Bind();
-			colors.Upload(colorData);
-			colors.BindVertexAttrib(1);
+			_colors.Bind();
+			_colors.Upload(colorData);
+			_colors.BindVertexAttrib(1);
 
 
 
-			vao.UnBind();
+			_vao.UnBind();
 
-			program = new ShaderProgram("Some shader");
-			vertex = new Shader(ShaderType.VertexShader);
-			fragment = new Shader(ShaderType.FragmentShader);
+			_program = new ShaderProgram("Some shader");
+			_vertex = new Shader(ShaderType.VertexShader);
+			_fragment = new Shader(ShaderType.FragmentShader);
 
-			vertex.ShaderSourceFile("Assets/Shaders/test_vs.glsl");
-			fragment.ShaderSourceFile("Assets/Shaders/test_fs.glsl");
+			_vertex.ShaderSourceFile("Assets/Shaders/test_vs.glsl");
+			_fragment.ShaderSourceFile("Assets/Shaders/test_fs.glsl");
 
-			program.AttachShader(vertex);
-			program.AttachShader(fragment);
+			_program.AttachShader(_vertex);
+			_program.AttachShader(_fragment);
 
-			program.Link();
+			_program.Link();
 
 			System.Diagnostics.Debug.WriteLine("Create Transform buffer");
-			Transform = new DefaultTransformBuffer();
-			Transform.BindingPoint = 1;
-			program.BindUniformBlock("TransformBlock", Transform);
+		    _transform = new DefaultTransformBuffer {BindingPoint = 1};
+		    _program.BindUniformBlock("TransformBlock", _transform);
 
-			Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4.0f, (float)Width / (float)Height, 1.0f, 100.0f, out projectionMatrix);
-			Matrix4.CreateTranslation(ref CameraPosition, out viewMatrix);
+			Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4.0f, (float)Width / (float)Height, 1.0f, 100.0f, out _projectionMatrix);
+			Matrix4.CreateTranslation(ref _cameraPosition, out _viewMatrix);
 
-			Transform.Data = new DefaultTransformData()
+			_transform.Data = new DefaultTransformData()
 			{
 				Position = new Vector4(0f, 0f, 0f, 1f),
 				Rotation = Quaternion.Identity,
 				Scale = Vector4.One * 0.5f,
 			};
 
-			Transform.UpdateData();
+			_transform.UpdateData();
 
-			ViewProjection = new DefaultViewProjectionBuffer();
-			ViewProjection.BindingPoint = 2;
-			program.BindUniformBlock("ViewProjectionBlock", ViewProjection);
-			ViewProjection.Update(viewMatrix, projectionMatrix, CameraPosition, CameraDirection);
+		    _viewProjection = new DefaultViewProjectionBuffer {BindingPoint = 2};
+		    _program.BindUniformBlock("ViewProjectionBlock", _viewProjection);
+			_viewProjection.Update(_viewMatrix, _projectionMatrix, _cameraPosition, _cameraDirection);
 
 			Logger.CheckGLError();
 
-			textureManager = TextureManager.Global;
+			_textureManager = TextureManager.Global;
 
-			diffuseTexture = textureManager.Load("Assets/Fonts/font3.png");
-			normalTexture = textureManager.Load("Assets/Textures/pattern_133_normal.png");
-			specularTexture = textureManager.Load("Assets/Textures/pattern_133_specular.png");
-
-            Logger.CheckGLError();
-
-            diffuseTexture.Settings = new TextureSettings(TextureWrappingMode.Repeat, TextureFilterMode.Trilinear, 16f, 1);
-			diffuseTexture.ApplySettings();
+			_diffuseTexture = _textureManager.Load("Assets/Fonts/font3.png");
+			_normalTexture = _textureManager.Load("Assets/Textures/pattern_133_normal.png");
+			_specularTexture = _textureManager.Load("Assets/Textures/pattern_133_specular.png");
 
             Logger.CheckGLError();
 
-            program.BindTextureUnit(diffuseTexture, "DiffuseTexture", 0);
-			program.BindTextureUnit(normalTexture, "NormalTexture", 1);
-			program.BindTextureUnit(specularTexture, "SpecularTexture", 2);
+            _diffuseTexture.Settings = new TextureSettings(TextureWrappingMode.Repeat, TextureFilterMode.Trilinear, 16f, 1);
+			_diffuseTexture.ApplySettings();
+
+            Logger.CheckGLError();
+
+            _program.BindTextureUnit(_diffuseTexture, "DiffuseTexture", 0);
+			_program.BindTextureUnit(_normalTexture, "NormalTexture", 1);
+			_program.BindTextureUnit(_specularTexture, "SpecularTexture", 2);
 
 			var font = Font.Load("Assets/Fonts/font3.fnt");
 
@@ -280,11 +268,14 @@ namespace ZaphatDevProgram
 
 			textProgram.Link();
 
-			text = new TextMesh();
-			text.ShaderProgram = textProgram;
-			text.Font = font;
-			text.Text = "!\"#$%&'()*+,-./0123456789:;<=>?@\nABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`\nabcdefghijklmnopqrstuvwxyz{|}~\u007f€‚ƒ„…†‡ˆ‰Š‹ŒŽ\n‘’“”•–—˜™š›œžŸ ¡¢£¤¥¦§¨©ª«¬­®¯°\n±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×\nØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ";
-			//text.Text = "mutsis";
+		    _text = new TextMesh
+		    {
+		        ShaderProgram = textProgram,
+		        Font = font,
+		        Text =
+		            "!\"#$%&'()*+,-./0123456789:;<=>?@\nABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`\nabcdefghijklmnopqrstuvwxyz{|}~\u007f€‚ƒ„…†‡ˆ‰Š‹ŒŽ\n‘’“”•–—˜™š›œžŸ ¡¢£¤¥¦§¨©ª«¬­®¯°\n±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×\nØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ"
+		    };
+		    //text.Text = "mutsis";
 			//text.Text = "Testaan toimiiko tämä teksti.";
 
 			Logger.Log("Loaded mandatory assets, now able to start running!");
@@ -307,11 +298,11 @@ namespace ZaphatDevProgram
 			}
 		}
 
-		double totalTime = 0.0;
+		double _totalTime = 0.0;
 
 		protected override void OnRenderFrame(FrameEventArgs e)
 		{
-			totalTime += e.Time;
+			_totalTime += e.Time;
 
 			GL.Viewport(0, 0, Width, Height);
 			GL.Enable(EnableCap.DepthTest);
@@ -319,33 +310,33 @@ namespace ZaphatDevProgram
 
 
 
-			program.Use();
+			_program.Use();
 
-			program.BindTextureUnit(diffuseTexture, "DiffuseTexture", 0);
-			program.BindTextureUnit(normalTexture, "NormalTexture", 1);
-			program.BindTextureUnit(diffuseTexture, "SpecularTexture", 2);
+			_program.BindTextureUnit(_diffuseTexture, "DiffuseTexture", 0);
+			_program.BindTextureUnit(_normalTexture, "NormalTexture", 1);
+			_program.BindTextureUnit(_diffuseTexture, "SpecularTexture", 2);
 
-			CameraPosition = new Vector3((float)Math.Sin(totalTime * 0.25) * 50 + (float)Math.Sin(totalTime * 0.53 * 0.25) * 10, (float)Math.Sin(totalTime * 0.912345 * 0.25) * 25, (float)Math.Cos(totalTime * 0.25) * 50 + (float)Math.Cos(totalTime * 0.5357 * 0.25) * 10);
+			_cameraPosition = new Vector3((float)Math.Sin(_totalTime * 0.25) * 50 + (float)Math.Sin(_totalTime * 0.53 * 0.25) * 10, (float)Math.Sin(_totalTime * 0.912345 * 0.25) * 25, (float)Math.Cos(_totalTime * 0.25) * 50 + (float)Math.Cos(_totalTime * 0.5357 * 0.25) * 10);
 
-			Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4.0f, ((float)Width) / ((float)Height), 15f, 75.0f, out projectionMatrix);
-			viewMatrix = Matrix4.LookAt(CameraPosition, Vector3.Zero, Vector3.UnitY);
-			var cameraDir = new Vector4(0, 0, 1, 0) * viewMatrix;
+			Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4.0f, ((float)Width) / ((float)Height), 15f, 75.0f, out _projectionMatrix);
+			_viewMatrix = Matrix4.LookAt(_cameraPosition, Vector3.Zero, Vector3.UnitY);
+			var cameraDir = new Vector4(0, 0, 1, 0) * _viewMatrix;
 
-			ViewProjection.Update(viewMatrix, projectionMatrix, CameraPosition, new Vector3(cameraDir.X, cameraDir.Y, cameraDir.Z));
+			_viewProjection.Update(_viewMatrix, _projectionMatrix, _cameraPosition, new Vector3(cameraDir.X, cameraDir.Y, cameraDir.Z));
 			//var rot = Quaternion.FromEulerAngles(0.0f, (float)totalTime, 0.0f);
-			Transform.UpdatePositionRotationScale(new Vector4(0f, 0f, 0f, 1f), Quaternion.Identity, Vector4.One * 10f);
+			_transform.UpdatePositionRotationScale(new Vector4(0f, 0f, 0f, 1f), Quaternion.Identity, Vector4.One * 10f);
 
-			var lightposition = new Vector3((float)Math.Sin(totalTime), 1.0f, (float)Math.Cos(totalTime));
-			program.SendUniform("LightPosition", lightposition);
+			var lightposition = new Vector3((float)Math.Sin(_totalTime), 1.0f, (float)Math.Cos(_totalTime));
+			_program.SendUniform("LightPosition", lightposition);
 
-			vao.Bind();
+			_vao.Bind();
 			GL.DrawElements(PrimitiveType.Triangles, 36, DrawElementsType.UnsignedInt, IntPtr.Zero);
 
 			GL.Disable(EnableCap.DepthTest);
 			GL.Enable(EnableCap.Blend);
 			GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
-			text.Draw();
+			_text.Draw();
 
 			SwapBuffers();
 

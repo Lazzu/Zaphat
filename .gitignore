@@ -238,3 +238,7 @@ _Pvt_Extensions
 # Visual Studio Code
 .vscode/
 
+#Jetbrains Rider
+.idea/
+
+
