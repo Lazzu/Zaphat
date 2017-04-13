@@ -45,7 +45,6 @@
   <ItemGroup>
     <Compile Include="Application\ZapApp.cs" />
     <Compile Include="Assets\Asset.cs" />
-    <Compile Include="Assets\Textures\SubTexture.cs" />
     <Compile Include="Core\DefaultViewProjectionBuffer.cs" />
     <Compile Include="Core\DefaultViewProjectionData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -90,6 +89,7 @@
     <Compile Include="Text\Kerning.cs" />
     <Compile Include="Text\Font.cs" />
     <Compile Include="Text\TextMesh.cs" />
+    <Compile Include="Sprites\GPUSprite.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Text\" />

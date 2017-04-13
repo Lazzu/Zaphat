@@ -1,14 +1,15 @@
 using OpenTK;
-using Zaphat.Assets.Textures;
 using Zaphat.Core;
+using Zaphat.Rendering;
 
 namespace Zaphat.Sprites
 {
 	public class Sprite
 	{
 		public string Name;
-
-		public SubTexture Texture;
+		public Vector4 TexCoords;
+		public Texture Texture;
+		public ShaderProgram Shader;
 	}
 }
 

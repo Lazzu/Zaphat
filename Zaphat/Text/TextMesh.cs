@@ -8,183 +8,181 @@ using Zaphat.Rendering;
 
 namespace Zaphat.Text
 {
-	public class TextMesh
-	{
-		[StructLayout(LayoutKind.Sequential)]
-		struct Vertex
-		{
-			Vector2 Pos;
-			Vector2 UV;
+    public class TextMesh
+    {
+        [StructLayout(LayoutKind.Sequential)]
+        struct Vertex
+        {
+            Vector2 Pos;
+            Vector2 UV;
 
-			public Vertex(Vector2 pos, Vector2 uv)
-			{
-				Pos = pos;
-				UV = uv;
-			}
-		}
+            public Vertex(Vector2 pos, Vector2 uv)
+            {
+                Pos = pos;
+                UV = uv;
+            }
+        }
 
-		string _text;
-		public string Text
-		{
-			get
-			{
-				return _text;
-			}
-			set
-			{
-				_text = value;
-				ReconstructMesh();
-			}
-		}
+        string _text;
 
-		Font _font;
-		public Font Font
-		{
-			get
-			{
-				return _font;
-			}
-			set
-			{
-				_font = value;
-				ReconstructMesh();
-			}
-		}
+        public string Text
+        {
+            get
+            {
+                return _text;
+            }
+            set
+            {
+                _text = value;
+                ReconstructMesh();
+            }
+        }
 
-		public ShaderProgram ShaderProgram
-		{
-			get;
-			set;
-		}
+        Font _font;
 
-		Buffer<Vertex> vertexBuffer;
-		int charactersToDraw = 0;
+        public Font Font
+        {
+            get
+            {
+                return _font;
+            }
+            set
+            {
+                _font = value;
+                ReconstructMesh();
+            }
+        }
 
-		VertexArrayObject vao;
-		VertexAttribute positionAttribute;
-		VertexAttribute texcoordAttribute;
+        public ShaderProgram ShaderProgram
+        {
+            get;
+            set;
+        }
 
-		public TextMesh()
-		{
-			vao = new VertexArrayObject();
+        Buffer<Vertex> vertexBuffer;
+        int charactersToDraw = 0;
 
-			var stride = BlittableValueType.StrideOf(new Vertex());
-			positionAttribute = new VertexAttribute("position", 2, VertexAttribPointerType.Float, stride, 0, false);
-			texcoordAttribute = new VertexAttribute("texcoord", 2, VertexAttribPointerType.Float, stride, Vector2.SizeInBytes, false);
+        VertexArrayObject vao;
+        VertexAttribute positionAttribute;
+        VertexAttribute texcoordAttribute;
 
-			vertexBuffer = new Buffer<Vertex>(BufferTarget.ArrayBuffer, BufferUsageHint.DynamicDraw);
-			vertexBuffer.ShadowStore = false;
-		}
+        public TextMesh()
+        {
+            vao = new VertexArrayObject();
 
-		public void ReconstructMesh()
-		{
-			if (string.IsNullOrEmpty(_text))
-				return;
+            var stride = BlittableValueType.StrideOf(new Vertex());
+            positionAttribute = new VertexAttribute("position", 2, VertexAttribPointerType.Float, stride, 0, false);
+            texcoordAttribute = new VertexAttribute("texcoord", 2, VertexAttribPointerType.Float, stride, Vector2.SizeInBytes, false);
 
-			if (_font == null)
-				return;
+            vertexBuffer = new Buffer<Vertex>(BufferTarget.ArrayBuffer, BufferUsageHint.DynamicDraw);
+            vertexBuffer.ShadowStore = false;
+        }
 
-			// TODO: Optimization: Do not use list, and use a separate vertex array and use raw uploading for the buffer
-			var vertices = new List<Vertex>();
+        public void ReconstructMesh()
+        {
+            if (string.IsNullOrEmpty(_text))
+                return;
 
-			// Temp values
-			Vector4 pos;
-			Vector4 uv;
-			var prevChar = (char)0;
-			float kerning = 0;
-			float xAdv = 0;
+            if (_font == null)
+                return;
 
-			// How much the character has offset in the mesh?
-			float xAdvance = 0;
-			float yAdvance = _font.Base;
+            // TODO: Optimization: Do not use list, and use a separate vertex array and use raw uploading for the buffer
+            var vertices = new List<Vertex>();
 
-			charactersToDraw = 0;
+            // Temp values
+            Vector4 pos;
+            Vector4 uv;
+            var prevChar = (char)0;
+            float kerning = 0;
+            float xAdv = 0;
 
-			// Split in to lines
-			var lines = _text.Split('\n');
+            // How much the character has offset in the mesh?
+            float xAdvance = 0;
+            float yAdvance = _font.Base;
 
-			for (int line = 0; line < lines.Length; line++)
-			{
-				var text = lines[line];
-				var chars = text.ToCharArray();
+            charactersToDraw = 0;
 
-				for (int i = 0; i < chars.Length; i++)
-				{
-					char c = chars[i];
+            // Split in to lines
+            var lines = _text.Split('\n');
 
-					_font.GetGlyphVertexData(c, out pos, out uv, out xAdv);
-					kerning = _font.GetKerning(prevChar, c);
-					xAdvance += xAdv + kerning;
+            for (int line = 0; line < lines.Length; line++)
+            {
+                var text = lines[line];
+                var chars = text.ToCharArray();
 
-					switch (c)
-					{
-						// TODO: Special cases for space, tab, etc..
+                for (int i = 0; i < chars.Length; i++)
+                {
+                    char c = chars[i];
+
+                    _font.GetGlyphVertexData(c, out pos, out uv, out xAdv);
+                    kerning = _font.GetKerning(prevChar, c);
+                    xAdvance += xAdv + kerning;
+
+                    switch (c)
+                    {
+                    // TODO: Special cases for space, tab, etc..
 
 
-						// Space bar
-						case (char)32:
+                    // Space bar
+                        case (char)32:
 							// Do nothing
-							break;
+                            break;
 
-						// Normal text, add it to the vertices
-						default:
+                    // Normal text, add it to the vertices
+                        default:
 
-							pos.X += xAdvance;
-							pos.Y += yAdvance;
-							pos.Z += xAdvance;
-							pos.W += yAdvance;
+                            pos.X += xAdvance;
+                            pos.Y += yAdvance;
+                            pos.Z += xAdvance;
+                            pos.W += yAdvance;
 
 							// Vertices for a rectangle
-							var v0 = new Vertex(pos.Xy, uv.Xy);
-							var v1 = new Vertex(pos.Xw, uv.Xw);
-							var v2 = new Vertex(pos.Zy, uv.Zy);
-							var v3 = new Vertex(pos.Zw, uv.Zw);
+                            var v0 = new Vertex(pos.Xy, uv.Xy);
+                            var v1 = new Vertex(pos.Xw, uv.Xw);
+                            var v2 = new Vertex(pos.Zy, uv.Zy);
+                            var v3 = new Vertex(pos.Zw, uv.Zw);
 
 							// Add two triangles to make a rectangle
-							vertices.Add(v0);
-							vertices.Add(v1);
-							vertices.Add(v2);
+                            vertices.Add(v0);
+                            vertices.Add(v1);
+                            vertices.Add(v2);
 
-							vertices.Add(v1);
-							vertices.Add(v2);
-							vertices.Add(v3);
+                            vertices.Add(v1);
+                            vertices.Add(v2);
+                            vertices.Add(v3);
 
-							charactersToDraw++;
+                            charactersToDraw++;
 
-							break;
-					}
+                            break;
+                    }
 
-					prevChar = c;
-				}
+                    prevChar = c;
+                }
 
-				xAdvance = 0;
-				yAdvance -= _font.LineHeight;
-			}
+                xAdvance = 0;
+                yAdvance -= _font.LineHeight;
+            }
 
 
 
-			vertexBuffer.Data = vertices.ToArray();
-		}
+            vertexBuffer.Data = vertices.ToArray();
+        }
 
-		int frame = 0;
+        public void Draw()
+        {
+            ShaderProgram.Use();
 
-		public void Draw()
-		{
-			ShaderProgram.Use();
+            ShaderProgram.SendUniform("Scale", new Vector2(1.0f / _font.ScaleW, 1.0f / _font.ScaleH));
 
-			ShaderProgram.SendUniform("Scale", new Vector2(1.0f / _font.ScaleW, 1.0f / _font.ScaleH));
-			ShaderProgram.SendUniform("TextureHeight", _font.ScaleH);
-			ShaderProgram.SendUniform("Frame", frame++);
+            vao.Bind();
+            vertexBuffer.BindForDrawing();
 
-			vao.Bind();
-			vertexBuffer.BindForDrawing();
+            positionAttribute.Set(ShaderProgram.GetAttribLocation("position"));
+            texcoordAttribute.Set(ShaderProgram.GetAttribLocation("texcoord"));
 
-			positionAttribute.Set(ShaderProgram.GetAttribLocation("position"));
-			texcoordAttribute.Set(ShaderProgram.GetAttribLocation("texcoord"));
+            ShaderProgram.BindTextureUnit(_font.Atlas, "sdfTexture", 0);
 
-			ShaderProgram.BindTextureUnit(_font.Atlas, "sdfTexture", 0);
-
-			GL.DrawArrays(PrimitiveType.Triangles, 0, charactersToDraw * 6);
-		}
-	}
+            GL.DrawArrays(PrimitiveType.Triangles, 0, charactersToDraw * 6);
+        }
+    }
 }

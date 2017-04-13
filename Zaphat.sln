@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
+# Visual Studio 2012
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zaphat", "Zaphat\Zaphat.csproj", "{77411612-8D5E-4A07-9208-0916F08D905A}"
@@ -42,13 +42,13 @@ Global
 		{92B603F9-025F-4627-82AE-BF8AD52FDFD3}.ReleaseMinimal|Any CPU.ActiveCfg = Release|Any CPU
 		{92B603F9-025F-4627-82AE-BF8AD52FDFD3}.ReleaseMinimal|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = Hierarchical
 		$1.ResourceNamePolicy = FileFormatDefault
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
